@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sindbad | AI-powered Global B2B Marketplace</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand" id="brand">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">Sindbad<small data-i18n="tagline">Global B2B Marketplace</small></span>
+  </div>
+  <nav class="topnav">
+    <button class="nav-btn active" data-view="market" data-i18n="navMarket">Marketplace</button>
+    <button class="nav-btn" data-view="suppliers" data-i18n="navSuppliers">Suppliers</button>
+    <button class="nav-btn" data-view="rfqs" data-i18n="navRfqs">Buying requests</button>
+    <button class="nav-btn" data-view="dashboard" data-i18n="navDashboard">Dashboard</button>
+  </nav>
+  <div class="top-actions">
+    <button id="langToggle" class="ghost-btn">عربي</button>
+    <button id="cartBtn" class="ghost-btn">🛒 <span id="cartCount">0</span></button>
+    <span id="userChip" class="user-chip hidden"></span>
+    <button id="authBtn" class="primary-btn" data-i18n="signIn">Sign in</button>
+  </div>
+</header>
+
+<main id="app">
+  <section id="view-market" class="view">
+    <div class="hero">
+      <h1 data-i18n="heroTitle">Source wholesale products from verified suppliers</h1>
+      <p data-i18n="heroSub">A bilingual B2B sourcing marketplace with RFQs, quotations and AI-powered recommendations.</p>
+    </div>
+    <div id="recoWrap" class="reco-wrap hidden">
+      <div class="reco-head">
+        <h2 data-i18n="recoTitle">Recommended for you</h2>
+        <span id="recoStrategy" class="chip"></span>
+      </div>
+      <div id="recoRow" class="reco-row"></div>
+    </div>
+    <div class="filters">
+      <input id="fSearch" type="search" data-i18n-ph="searchPh" placeholder="Search products, suppliers, tags...">
+      <select id="fCategory"><option value="" data-i18n="allCategories">All categories</option></select>
+      <select id="fOrigin"><option value="" data-i18n="allOrigins">All origins</option></select>
+      <input id="fMin" type="number" min="0" step="0.01" data-i18n-ph="minPrice" placeholder="Min $">
+      <input id="fMax" type="number" min="0" step="0.01" data-i18n-ph="maxPrice" placeholder="Max $">
+      <select id="fSort">
+        <option value="new" data-i18n="sortNew">Newest</option>
+        <option value="price_asc" data-i18n="sortPriceAsc">Price: low to high</option>
+        <option value="price_desc" data-i18n="sortPriceDesc">Price: high to low</option>
+      </select>
+    </div>
+    <div id="productGrid" class="product-grid"></div>
+    <p id="marketEmpty" class="empty hidden" data-i18n="noProducts">No products match these filters.</p>
+  </section>
+
+  <section id="view-suppliers" class="view hidden">
+    <h1 data-i18n="suppliersTitle">Supplier directory</h1>
+    <div class="filters">
+      <input id="sSearch" type="search" data-i18n-ph="supplierSearchPh" placeholder="Search by company or country...">
+    </div>
+    <div id="supplierGrid" class="supplier-grid"></div>
+  </section>
+
+  <section id="view-rfqs" class="view hidden">
+    <div id="rfqBuyer" class="hidden">
+      <h1 data-i18n="rfqBuyerTitle">My buying requests</h1>
+      <form id="rfqForm" class="panel form-grid">
+        <input id="rqTitle" required data-i18n-ph="rfqTitlePh" placeholder="What do you want to source?">
+        <textarea id="rqDetails" data-i18n-ph="rfqDetailsPh" placeholder="Specifications, packaging, certifications..."></textarea>
+        <input id="rqQty" type="number" min="1" value="1" data-i18n-ph="rfqQtyPh" placeholder="Quantity">
+        <input id="rqTarget" type="number" min="0" step="0.01" data-i18n-ph="rfqTargetPh" placeholder="Target price (optional)">
+        <input id="rqDest" data-i18n-ph="rfqDestPh" placeholder="Destination (optional)">
+        <button class="primary-btn" type="submit" data-i18n="rfqPublish">Publish request</button>
+      </form>
+      <div id="myRfqs"></div>
+    </div>
+    <div id="rfqSupplier" class="hidden">
+      <h1 data-i18n="rfqSupplierTitle">Open buying requests</h1>
+      <div id="openRfqs"></div>
+    </div>
+    <p id="rfqAnon" class="empty hidden" data-i18n="rfqAnon">Sign in to publish buying requests or submit quotations.</p>
+  </section>
+
+  <section id="view-dashboard" class="view hidden">
+    <h1 data-i18n="dashTitle">Dashboard</h1>
+    <div id="dashStats" class="stats-row"></div>
+    <div class="dash-cols">
+      <div>
+        <h2 data-i18n="dashOrders">Orders</h2>
+        <div id="dashOrders"></div>
+      </div>
+      <div>
+        <h2 data-i18n="dashFavorites">Favorites</h2>
+        <div id="dashFavs"></div>
+      </div>
+    </div>
+    <div id="supplierAdmin" class="hidden">
+      <h2 data-i18n="myProducts">My products</h2>
+      <form id="productForm" class="panel form-grid">
+        <input type="hidden" id="pId">
+        <input id="pTitle" required data-i18n-ph="pTitlePh" placeholder="Product title">
+        <input id="pCategory" required data-i18n-ph="pCategoryPh" placeholder="Category">
+        <input id="pPrice" required type="number" min="0.01" step="0.01" data-i18n-ph="pPricePh" placeholder="Unit price (USD)">
+        <input id="pMoq" type="number" min="1" value="1" data-i18n-ph="pMoqPh" placeholder="MOQ">
+        <input id="pStock" type="number" min="0" value="0" data-i18n-ph="pStockPh" placeholder="Stock">
+        <input id="pOrigin" data-i18n-ph="pOriginPh" placeholder="Origin country">
+        <input id="pLead" data-i18n-ph="pLeadPh" placeholder="Lead time (e.g. 7-15 days)">
+        <input id="pTags" data-i18n-ph="pTagsPh" placeholder="Tags, comma separated">
+        <input id="pImage" data-i18n-ph="pImagePh" placeholder="Image URL (optional)">
+        <textarea id="pDesc" data-i18n-ph="pDescPh" placeholder="Description"></textarea>
+        <button class="primary-btn" type="submit" data-i18n="pSave">Save product</button>
+        <button class="ghost-btn hidden" id="pCancel" type="button" data-i18n="pCancel">Cancel edit</button>
+      </form>
+      <div id="myProducts"></div>
+    </div>
+    <p id="dashAnon" class="empty hidden" data-i18n="dashAnon">Sign in to see your dashboard.</p>
+  </section>
+</main>
+
+<div id="authModal" class="modal-backdrop hidden">
+  <div class="modal panel">
+    <button class="modal-close" data-close="authModal">×</button>
+    <div class="tabs">
+      <button id="tabLogin" class="tab active" data-i18n="tabLogin">Sign in</button>
+      <button id="tabRegister" class="tab" data-i18n="tabRegister">Create account</button>
+    </div>
+    <form id="loginForm" class="form-grid">
+      <input id="liEmail" type="email" required data-i18n-ph="emailPh" placeholder="Email">
+      <input id="liPass" type="password" required data-i18n-ph="passPh" placeholder="Password">
+      <button class="primary-btn" type="submit" data-i18n="signIn">Sign in</button>
+      <p class="hint" data-i18n="demoHint">Demo: demo@sindbad.com / demo1234 (supplier), buyer@sindbad.com / buyer1234 (buyer)</p>
+    </form>
+    <form id="registerForm" class="form-grid hidden">
+      <input id="rgName" required data-i18n-ph="namePh" placeholder="Full name">
+      <input id="rgEmail" type="email" required data-i18n-ph="emailPh" placeholder="Email">
+      <input id="rgPass" type="password" required minlength="8" data-i18n-ph="passPh" placeholder="Password (8+ chars)">
+      <input id="rgCompany" required data-i18n-ph="companyPh" placeholder="Company">
+      <input id="rgCountry" data-i18n-ph="countryPh" placeholder="Country">
+      <select id="rgRole">
+        <option value="buyer" data-i18n="roleBuyer">Buyer</option>
+        <option value="supplier" data-i18n="roleSupplier">Supplier</option>
+      </select>
+      <button class="primary-btn" type="submit" data-i18n="tabRegister">Create account</button>
+    </form>
+  </div>
+</div>
+
+<div id="productModal" class="modal-backdrop hidden">
+  <div class="modal panel wide">
+    <button class="modal-close" data-close="productModal">×</button>
+    <div id="productDetail"></div>
+  </div>
+</div>
+
+<div id="cartModal" class="modal-backdrop hidden">
+  <div class="modal panel">
+    <button class="modal-close" data-close="cartModal">×</button>
+    <h2 data-i18n="cartTitle">Sourcing cart</h2>
+    <div id="cartItems"></div>
+    <div id="cartFooter"></div>
+  </div>
+</div>
+
+<div id="quotesModal" class="modal-backdrop hidden">
+  <div class="modal panel wide">
+    <button class="modal-close" data-close="quotesModal">×</button>
+    <div id="quotesBody"></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
