@@ -333,3 +333,54 @@ async function renderMyProducts(){
   $('#myProducts').innerHTML=rows.map(p=>`<div class="row-item">
     <div class="row-head"><b>${esc(p.title)}</b><span class="card-price">${money(p.price)}</span></div>
     <p class="muted">${esc(p.category)} · ${t('stock')}: ${p.stock} · ${t('moq')}: ${p.moq}</p>
+    <button class="mini-btn" onclick='editProduct(${JSON.stringify(p).replace(/'/g,"&#39;")})'>${t('edit')}</button>
+    <button class="mini-btn danger" onclick="deleteProduct(${p.id})">${t('remove')}</button>
+  </div>`).join('')||`<p class="empty">${t('productsEmpty')}</p>`;
+}
+window.editProduct=p=>{
+  $('#pId').value=p.id;$('#pTitle').value=p.title;$('#pCategory').value=p.category;$('#pPrice').value=p.price;
+  $('#pMoq').value=p.moq;$('#pStock').value=p.stock;$('#pOrigin').value=p.origin;$('#pLead').value=p.lead_time;
+  $('#pTags').value=p.tags||'';$('#pImage').value=p.image||'';$('#pDesc').value=p.description||'';
+  $('#pCancel').classList.remove('hidden');$('#pTitle').focus();
+};
+$('#pCancel').onclick=()=>{$('#productForm').reset();$('#pId').value='';$('#pCancel').classList.add('hidden');};
+$('#productForm').onsubmit=async e=>{
+  e.preventDefault();
+  const body={title:$('#pTitle').value,category:$('#pCategory').value,description:$('#pDesc').value,price:parseFloat($('#pPrice').value),
+    moq:parseInt($('#pMoq').value)||1,stock:parseInt($('#pStock').value)||0,origin:$('#pOrigin').value,lead_time:$('#pLead').value||'7-15 days',
+    tags:$('#pTags').value,image:$('#pImage').value};
+  try{
+    const id=$('#pId').value;
+    if(id)await api('/api/products/'+id,{method:'PUT',body});
+    else await api('/api/products',{method:'POST',body});
+    e.target.reset();$('#pId').value='';$('#pCancel').classList.add('hidden');
+    toast(t('pSave')+' ✓');renderMyProducts();loadProducts();
+  }catch(err){toast(err.message,true);}
+};
+window.deleteProduct=async id=>{
+  try{await api('/api/products/'+id,{method:'DELETE'});renderMyProducts();loadProducts();}
+  catch(err){toast(err.message,true);}
+};
+
+/* ---------- modals ---------- */
+function openModal(id){$('#'+id).classList.remove('hidden');}
+function closeModal(id){$('#'+id).classList.add('hidden');}
+$$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+$$('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden');}));
+
+$('#langToggle').onclick=()=>{state.lang=state.lang==='ar'?'en':'ar';localStorage.setItem('sb_lang',state.lang);applyLang();};
+
+function renderAll(){renderAuth();renderProducts();renderCartCount();if(!$('#view-suppliers').classList.contains('hidden'))renderSuppliers();if(!$('#view-rfqs').classList.contains('hidden'))renderRfqs();if(!$('#view-dashboard').classList.contains('hidden'))renderDashboard();}
+
+/* ---------- boot ---------- */
+(async()=>{
+  applyLang();
+  renderCartCount();
+  try{const d=await api('/api/me');state.user=d.user;}catch(e){}
+  renderAuth();
+  await loadProducts();
+  await loadFilters();
+  await loadRecos();
+  if(state.user&&state.user.role==='buyer'){try{const favs=await api('/api/favorites');state.favIds=new Set(favs.map(f=>f.id));renderProducts();}catch(e){}}
+  renderSuppliers();
+})();
