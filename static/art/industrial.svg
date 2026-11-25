@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Industrial">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#475569"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<circle cx="520" cy="60" r="110" fill="#fff" fill-opacity=".06"/><circle cx="70" cy="360" r="140" fill="#fff" fill-opacity=".05"/>
+<path d="M379.3 189.6 L407.6 190.3 L407.6 209.7 L379.3 210.4 L370.3 238.2 L392.7 255.4 L381.3 271.1 L358.1 255.0 L334.4 272.2 L342.5 299.3 L324.0 305.3 L314.6 278.6 L285.4 278.6 L276.0 305.3 L257.5 299.3 L265.6 272.2 L241.9 255.0 L218.7 271.1 L207.3 255.4 L229.7 238.2 L220.7 210.4 L192.4 209.7 L192.4 190.3 L220.7 189.6 L229.7 161.8 L207.3 144.6 L218.7 128.9 L241.9 145.0 L265.6 127.8 L257.5 100.7 L276.0 94.7 L285.4 121.4 L314.6 121.4 L324.0 94.7 L342.5 100.7 L334.4 127.8 L358.1 145.0 L381.3 128.9 L392.7 144.6 L370.3 161.8z" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="300" cy="200" r="36" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
