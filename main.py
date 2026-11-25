@@ -254,7 +254,7 @@ def ml_model():
  """Fit the hybrid recommender on products + synthetic demo interactions + real interactions. Refit only when the data changed."""
  c=db();prods=[dict(r) for r in c.execute('SELECT id,title,category,tags FROM products WHERE active=1 ORDER BY id')]
  real=[('real%d'%r['user_id'],r['product_id'],r['event_type']) for r in c.execute('SELECT user_id,product_id,event_type FROM interactions')];c.close()
- key=(len(prods),len(real))
+ key=(len(prods),len(real)//20)
  if _ML['key']!=key:
   c=db();syn=[(r['user_key'],r['product_id'],r['event_type']) for r in c.execute('SELECT user_key,product_id,event_type FROM synthetic_interactions').fetchall()];c.close()
   f=os.path.join(BASE,'data','synthetic_interactions.txt')
@@ -499,3 +499,17 @@ def list_quotes(rfq_id:int,u=Depends(require_user)):
  if not rfq:c.close();raise HTTPException(404,'RFQ not found')
  if u['role']=='buyer' and rfq['buyer_id']!=u['id']:c.close();raise HTTPException(403,'This request does not belong to your account')
  rows=[dict(r) for r in c.execute('SELECT q.id,q.rfq_id,q.price,q.currency,q.lead_time,q.notes,q.created_at,u.company supplier_company,u.country supplier_country FROM quotations q JOIN users u ON u.id=q.supplier_id WHERE q.rfq_id=? ORDER BY q.price ASC',(rfq_id,)).fetchall()];c.close();return rows
+
+
+import threading, time, urllib.request
+def _warm_and_keepalive():
+    """Fit the recommender once at startup so the first visitor does not wait, and, on Render, ping our own public URL
+    every 10 minutes so the free instance is not put to sleep for inactivity."""
+    try:ml_model()
+    except Exception:pass
+    url=os.environ.get('RENDER_EXTERNAL_URL')
+    while url:
+        time.sleep(600)
+        try:urllib.request.urlopen(url.rstrip('/')+'/api/health',timeout=30).read()
+        except Exception:pass
+threading.Thread(target=_warm_and_keepalive,daemon=True).start()
