@@ -121,3 +121,6 @@ h2{font-size:18px;margin:18px 0 10px;color:var(--cyan)}
 .similar-card img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:6px}
 .similar-card .reason{font-size:11px;color:#5eead4}
 .similar-note{font-size:11px;margin-top:8px}
+
+@keyframes recoflash{from{outline:2px solid #4da3ff;outline-offset:6px}to{outline:2px solid transparent;outline-offset:6px}}
+.reco-flash{animation:recoflash 1.2s ease-out}
