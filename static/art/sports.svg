@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Sports">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d4ed8"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<circle cx="520" cy="60" r="110" fill="#fff" fill-opacity=".06"/><circle cx="70" cy="360" r="140" fill="#fff" fill-opacity=".05"/>
+<path d="M200 160v80M140 215v-80M140 215v80" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M400 160v80M460 215v-80M460 215v80" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M180 200h240" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
