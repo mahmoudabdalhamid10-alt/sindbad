@@ -112,3 +112,24 @@ def test_similar_products_endpoint(client):
     assert len(items) == 5 and all(i['id'] != 1 for i in items)
     assert set(items[0]['reason']) == {'bought_together', 'similar_text'}
     assert client.get('/api/products/99999/similar').status_code == 404
+
+
+def test_recommendations_anonymous_is_popularity_fallback(client):
+    d = client.get('/api/recommendations?limit=12').json()
+    assert d['personalized'] is False and d['model'] == 'popularity'
+    cats = [i['category'] for i in d['items']]
+    assert max(cats.count(c) for c in set(cats)) <= 2
+
+
+def test_recommendations_change_after_user_activity(client):
+    login(client, 'buyer@sindbad.com', 'buyer1234')
+    before = client.get('/api/recommendations?limit=8').json()
+    # act like a construction-site buyer: helmets, gloves, boots, pumps
+    for pid in (13, 1, 22, 11):
+        assert client.post('/api/interactions', json={'product_id': pid, 'event_type': 'cart'}).status_code == 200
+    after = client.get('/api/recommendations?limit=8').json()
+    assert after['personalized'] is True and after['model'] == 'hybrid-ml-v1'
+    ids = [i['id'] for i in after['items']]
+    assert not {13, 1, 22, 11} & set(ids)            # items already touched are not recommended back
+    assert ids != [i['id'] for i in before['items']]  # the row actually changed
+    assert all(i['recommendation_reason'].startswith('Because you showed interest in') for i in after['items'])
