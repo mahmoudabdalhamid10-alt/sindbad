@@ -180,9 +180,23 @@ async function openProduct(id){
           <button class="ghost-btn fav-btn ${state.favIds.has(p.id)?'active':''}" onclick="toggleFav(${p.id},this)">${state.favIds.has(p.id)?'★':'☆'}</button>
         </div>
       </div>
-    </div>`;
+    </div>
+    <section class="similar-box"><h3>You may also like</h3><div id="similarList" class="similar-list"><span class="card-meta">Loading…</span></div>
+    <p class="card-meta similar-note">Hybrid ML model: text similarity (TF-IDF) + buyers who bought together (item-based collaborative filtering and SVD). Trained mostly on synthetic demo data.</p></section>`;
     openModal('productModal');
+    loadSimilar(id);
   }catch(err){toast(err.message,true);}
+}
+async function loadSimilar(id){
+  try{
+    const r=await api('/api/products/'+id+'/similar?k=6');
+    $('#similarList').innerHTML=r.items.map(i=>`<button class="similar-card" onclick="openProduct(${i.id})">
+      <img src="${esc(i.image)}" alt="${esc(i.title)}" loading="lazy">
+      <strong>${esc(i.title)}</strong>
+      <span class="card-meta">${esc(i.category)}</span>
+      <span class="reason">${i.reason.bought_together}% bought together · ${i.reason.similar_text}% similar text</span>
+    </button>`).join('');
+  }catch(e){const b=$('#similarList');if(b)b.textContent='';}
 }
 window.openProduct=openProduct;
 
