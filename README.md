@@ -12,14 +12,26 @@
 
 ![Sindbad marketplace home page](docs/screenshot.svg)
 
-## Run on Windows
+## Run locally (no setup, no environment variables)
 
-1. Install Python 3.10+ (Python 3.13 is supported).
-2. Extract this folder.
-3. Double-click `START.bat` and keep the terminal open.
-4. Your browser should open automatically. If it does not, visit http://127.0.0.1:8000
+A fresh clone runs as is. It uses a local SQLite file (`sindbad.db`) that is created and seeded on the first start: 120 products, demo users, the labelled synthetic interaction data and the resource registry. The product photos are in `photos/` and are served from the code, nothing to download. No `DATABASE_URL` is needed.
 
-## Run on macOS or Linux
+**Windows**
+
+1. Install Python 3.10 or newer from https://www.python.org/downloads/ (tick "Add python.exe to PATH").
+2. Download or clone the repo and open the folder.
+3. Double-click `START.bat`. Keep the window open. The browser opens at http://127.0.0.1:8000.
+
+Or in PowerShell inside the folder:
+
+```powershell
+py -3 -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python -m uvicorn main:app --port 8000
+```
+
+**macOS / Linux**
 
 ```bash
 python3 -m venv venv && source venv/bin/activate
@@ -27,7 +39,17 @@ pip install -r requirements.txt
 uvicorn main:app --port 8000
 ```
 
-Then open http://127.0.0.1:8000. The SQLite database (`sindbad.db`) is created and seeded on first start.
+Open http://127.0.0.1:8000.
+
+**Become admin locally** (admin dashboard at http://127.0.0.1:8000/admin, raw tables at /admin/db):
+
+1. Sign up on the site with your own email and password.
+2. In a second terminal inside the folder (with the venv active) run:
+   - Windows: `python scripts\make_admin.py you@example.com`
+   - macOS / Linux: `python scripts/make_admin.py you@example.com`
+3. Sign in again. An "Admin" link appears in the top bar.
+
+To reset the local data, stop the server and delete `sindbad.db`. It is rebuilt on the next start.
 
 ## Tests
 
