@@ -75,6 +75,9 @@ function renderAuth(){
   $('#userChip').classList.toggle('hidden',!u);
   if(u)$('#userChip').textContent=u.company+' · '+(u.role==='buyer'?t('roleBuyer'):t('roleSupplier'));
   $('#authBtn').textContent=u?t('signOut'):t('signIn');
+  let al=document.getElementById('adminLink');
+  if(u&&u.is_admin){if(!al){al=document.createElement('a');al.id='adminLink';al.href='/admin';al.className='nav-btn';al.textContent='Admin';al.style.textDecoration='none';al.title='Admin dashboard';document.querySelector('.topnav').appendChild(al);}}
+  else if(al)al.remove();
 }
 $('#authBtn').onclick=async()=>{
   if(state.user){await api('/api/logout',{method:'POST'});state.user=null;state.favIds=new Set();renderAuth();renderAll();return;}
