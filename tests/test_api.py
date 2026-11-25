@@ -172,3 +172,18 @@ def test_new_signup_gets_role_and_supplier_rows(client):
     assert c.execute('SELECT role FROM user_roles WHERE user_id=?', (uid,)).fetchone()['role'] == 'supplier'
     assert c.execute('SELECT company FROM suppliers WHERE user_id=?', (uid,)).fetchone()['company'] == 'Sam Trading'
     c.close()
+
+
+def test_admin_db_viewer_is_admin_only_and_hides_secrets(client):
+    assert client.get('/api/admin/db').status_code == 401
+    client.post('/api/register', json={'name': 'Ann Admin', 'email': 'ann@example.com', 'password': 'longpass123', 'role': 'buyer', 'company': 'Ann Co', 'country': 'Egypt'})
+    assert client.get('/api/admin/db').status_code == 403
+    c = main.db()
+    uid = c.execute("SELECT id FROM users WHERE email='ann@example.com'").fetchone()['id']
+    c.execute("INSERT INTO user_roles(user_id,role,granted_at) VALUES(?,?,?)", (uid, 'admin', 'now')); c.commit(); c.close()
+    d = client.get('/api/admin/db').json()
+    assert any(x['table'] == 'products' and x['rows'] == 120 for x in d['tables'])
+    rows = client.get('/api/admin/db/users').json()['rows']
+    assert rows and all(r['password_hash'] == '(hidden)' and r['salt'] == '(hidden)' for r in rows)
+    assert client.get('/api/admin/db/sqlite_master').status_code == 404
+    assert client.get('/admin/db').status_code == 200
