@@ -270,6 +270,42 @@ def similar_products(pid:int,k:int=6):
    d=dict(r);parts=h['parts'];tot=sum(parts.values()) or 1
    d['similarity']=h['score'];d['reason']={'bought_together':round(100*(parts['item_knn']+parts['svd'])/tot),'similar_text':round(100*parts['content']/tot)};out.append(d)
  c.close();return {'items':out,'model':'hybrid: tf-idf content + item-knn + svd'}
+
+from fastapi.responses import HTMLResponse
+ADMIN_TABLES=['users','roles','user_roles','suppliers','products','interactions','event_types','synthetic_interactions','favorites','orders','resources']
+HIDDEN_COLS={'password_hash','salt'}
+def require_admin(request:Request):
+    u=current_user(request)
+    if not u:raise HTTPException(401,'Sign in first')
+    c=db();ok=c.execute("SELECT 1 FROM user_roles WHERE user_id=? AND role='admin'",(u['id'],)).fetchone();c.close()
+    if not ok:raise HTTPException(403,'Admins only')
+    return u
+@app.get('/api/admin/db')
+def admin_db(a=Depends(require_admin)):
+    c=db();out=[{'table':t,'rows':c.execute('SELECT COUNT(*) n FROM '+t).fetchone()['n']} for t in ADMIN_TABLES];c.close()
+    return {'backend':'postgresql' if dbcompat.USE_PG else 'sqlite','tables':out}
+@app.get('/api/admin/db/{table}')
+def admin_db_table(table:str,limit:int=50,offset:int=0,a=Depends(require_admin)):
+    if table not in ADMIN_TABLES:raise HTTPException(404,'Unknown table')
+    limit=max(1,min(limit,200));offset=max(0,offset)
+    c=db();rows=[dict(r) for r in c.execute('SELECT * FROM '+table+' ORDER BY 1 LIMIT %d OFFSET %d'%(limit,offset)).fetchall()];total=c.execute('SELECT COUNT(*) n FROM '+table).fetchone()['n'];c.close()
+    for r in rows:
+        for k in list(r):
+            if k in HIDDEN_COLS:r[k]='(hidden)'
+    return {'table':table,'total':total,'limit':limit,'offset':offset,'rows':rows}
+ADMIN_PAGE="""<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Sindbad DB viewer</title>
+<style>body{font:14px system-ui;background:#0f1419;color:#e6e6e6;margin:20px}a,button{color:#7cc4ff;background:none;border:0;cursor:pointer;font:inherit}table{border-collapse:collapse;margin-top:10px}td,th{border:1px solid #333;padding:4px 8px;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}th{background:#1c2430}</style>
+<h2>Sindbad database (read-only)</h2><div id=m></div><div id=t></div><div id=r></div>
+<script>
+const $=id=>document.getElementById(id);let cur='',off=0;
+async function j(u){const r=await fetch(u);if(!r.ok){$('m').textContent=r.status==401?'Sign in on the main site first, then reload this page.':r.status==403?'This account is not an admin.':'Error '+r.status;throw 0}return r.json()}
+async function init(){const d=await j('/api/admin/db');$('m').textContent='Backend: '+d.backend;$('t').innerHTML=d.tables.map(x=>`<button onclick="show('${x.table}',0)">${x.table} (${x.rows})</button>`).join(' | ')}
+async function show(t,o){cur=t;off=Math.max(0,o);const d=await j(`/api/admin/db/${t}?limit=50&offset=${off}`);const cols=d.rows[0]?Object.keys(d.rows[0]):[];const esc=s=>String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+$('r').innerHTML=`<p>${t}: rows ${off+1}-${off+d.rows.length} of ${d.total} <button onclick="show(cur,off-50)">prev</button> <button onclick="show(cur,off+50)">next</button></p><table><tr>${cols.map(c=>'<th>'+esc(c)+'</th>').join('')}</tr>${d.rows.map(r=>'<tr>'+cols.map(c=>'<td title="'+esc(r[c])+'">'+esc(typeof r[c]=='object'&&r[c]!==null?JSON.stringify(r[c]):r[c])+'</td>').join('')+'</tr>').join('')}</table>`}
+init();
+</script>"""
+@app.get('/admin/db',response_class=HTMLResponse)
+def admin_db_page():return ADMIN_PAGE
 @app.get('/api/resources')
 def resources():
  c=db();rows=[dict(r) for r in c.execute('SELECT name,kind,description,source,is_synthetic,used_by FROM resources ORDER BY id').fetchall()]
