@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sindbad Admin</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}.stat b{display:block;font-size:26px;color:var(--cyan)}.stat span{color:var(--dim);font-size:13px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+.tab{padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}.tab.on{background:var(--panel2);color:var(--cyan);border-color:var(--cyan)}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.tw{overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;font-size:13px}th{color:var(--dim);background:var(--panel2)}
+.b{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2)}.b.p{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#05101f;border:0;font-weight:600}.b.d{color:var(--red)}
+.msg{padding:10px;color:var(--dim)}.err{color:var(--red)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--dim)}
+</style></head><body><div class="wrap">
+<div class="top"><h2>Sindbad Admin</h2><div><a class="b" href="/">Back to site</a> <a class="b" href="/admin/db">Raw DB viewer</a></div></div>
+<div id="msg" class="msg"></div><div class="stats" id="stats"></div>
+<div class="tabs" id="tabs"></div><div id="formbox"></div>
+<div class="bar"><input id="q" placeholder="Search..." style="min-width:240px"><button class="b" id="go">Search</button><span id="info" class="msg"></span><span style="flex:1"></span><button class="b" id="prev">Prev</button><button class="b" id="next">Next</button><button class="b p hidden" id="addp">Add product</button></div>
+<div class="tw"><table id="tbl"></table></div></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KINDS=['products','users','suppliers','orders','events','resources'];let kind='products',off=0,total=0,cache={};
+async function api(u,o={}){const r=await fetch(u,{method:o.method||'GET',headers:{'Content-Type':'application/json'},body:o.body?JSON.stringify(o.body):undefined});let d={};try{d=await r.json()}catch(e){}
+ if(!r.ok){throw new Error(r.status==401?'Sign in on the main site first, then reload.':r.status==403?'This account is not an admin.':(typeof d.detail=='string'?d.detail:'Request failed ('+r.status+')'))}return d}
+async function stats(){const d=await api('/api/admin/stats');$('#stats').innerHTML=[['Users',d.users],['Buyers',d.buyers],['Suppliers',d.suppliers],['Admins',d.admins],['Active products',d.products],['Orders',d.orders],['Real events',d.events],['Synthetic events',d.synthetic_events]].map(([a,b])=>`<div class="stat"><b>${b}</b><span>${a}</span></div>`).join('');$('#msg').textContent='Database: '+d.backend+' · events by type: '+(d.events_by_type.map(e=>e.event_type+' '+e.n).join(', ')||'none yet')}
+function tabs(){$('#tabs').innerHTML=KINDS.map(k=>`<button class="tab ${k==kind?'on':''}" onclick="setKind('${k}')">${k}</button>`).join('');$('#addp').classList.toggle('hidden',kind!='products')}
+function setKind(k){kind=k;off=0;$('#q').value='';$('#formbox').innerHTML='';tabs();load()}
+async function load(){try{const d=await api(`/api/admin/list/${kind}?q=${encodeURIComponent($('#q').value)}&limit=15&offset=${off}`);total=d.total;cache={};d.rows.forEach(r=>cache[r.id]=r);
+ const cols=d.rows[0]?Object.keys(d.rows[0]):[];const act=kind=='products'||kind=='users';
+ $('#tbl').innerHTML=`<tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}${act?'<th>actions</th>':''}</tr>`+d.rows.map(r=>`<tr>${cols.map(c=>`<td title="${esc(r[c])}">${esc(r[c])}</td>`).join('')}${act?'<td>'+(kind=='products'?`<button class="b" onclick="editP(${r.id})">Edit</button> <button class="b d" onclick="delP(${r.id})">Delete</button>`:`<button class="b" onclick="role(${r.id},${r.is_admin?'false':'true'})">${r.is_admin?'Remove admin':'Make admin'}</button>`)+'</td>':''}</tr>`).join('')||'<tr><td class="msg">No rows</td></tr>';
+ $('#info').textContent=total?`${off+1}-${off+d.rows.length} of ${total}`:'0 rows'}catch(e){$('#msg').innerHTML='<span class="err">'+esc(e.message)+'</span>'}}
+$('#go').onclick=()=>{off=0;load()};$('#q').onkeydown=e=>{if(e.key=='Enter'){off=0;load()}};$('#prev').onclick=()=>{off=Math.max(0,off-15);load()};$('#next').onclick=()=>{if(off+15<total){off+=15;load()}};
+async function role(id,a){try{await api(`/api/admin/users/${id}/admin`,{method:'POST',body:{admin:a}});await stats();load()}catch(e){alert(e.message)}}
+async function delP(id){if(!confirm('Hide this product from the site? (orders and events are kept)'))return;try{await api('/api/admin/products/'+id,{method:'DELETE'});await stats();load()}catch(e){alert(e.message)}}
+const F=[['title','Title'],['category','Category'],['supplier_id','Supplier id'],['price','Price'],['currency','Currency'],['moq','MOQ'],['stock','Stock'],['origin','Origin'],['lead_time','Lead time'],['tags','Tags'],['image','Image URL'],['description','Description']];
+function form(p,id){$('#formbox').innerHTML=`<div class="form">${F.map(([k,l])=>`<label>${l}<input id="f_${k}" value="${esc(p[k]??'')}"></label>`).join('')}<label>Active<select id="f_active"><option value="1" ${p.active!=0?'selected':''}>yes</option><option value="0" ${p.active==0?'selected':''}>no (hidden)</option></select></label><div style="display:flex;gap:8px;align-items:end"><button class="b p" onclick="saveP(${id})">${id?'Save changes':'Create product'}</button><button class="b" onclick="$('#formbox').innerHTML=''">Cancel</button></div></div>`;scrollTo(0,0)}
+async function editP(id){form(await api('/api/admin/products/'+id),id)}
+$('#addp').onclick=()=>form({currency:'USD',moq:1,stock:100,lead_time:'7-15 days',supplier_id:''},0);
+async function saveP(id){const b={};F.forEach(([k])=>b[k]=$('#f_'+k).value);['supplier_id','moq','stock'].forEach(k=>b[k]=parseInt(b[k]||0));b.price=parseFloat(b.price);b.active=parseInt($('#f_active').value);
+ try{await api(id?'/api/admin/products/'+id:'/api/admin/products',{method:id?'PUT':'POST',body:b});$('#formbox').innerHTML='';await stats();load()}catch(e){alert(e.message)}}
+stats().then(()=>{tabs();load()}).catch(e=>{$('#msg').innerHTML='<span class="err">'+esc(e.message)+'</span>'});
+</script></body></html>
