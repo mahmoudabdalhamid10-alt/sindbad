@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Packaging">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a16207"/><stop offset="1" stop-color="#1c1917"/></linearGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<circle cx="520" cy="60" r="110" fill="#fff" fill-opacity=".06"/><circle cx="70" cy="360" r="140" fill="#fff" fill-opacity=".05"/>
+<path d="M300 110l130 55v130l-130 55-130-55V165z" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M170 165l130 55 130-55M300 220v130" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M235 138l130 55v45" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
