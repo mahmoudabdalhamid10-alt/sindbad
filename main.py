@@ -312,7 +312,7 @@ class AdminProduct(BaseModel):
 class AdminRole(BaseModel): admin:bool
 ADMIN_LISTS={
  'users':("SELECT u.id,u.name,u.email,u.role,u.company,u.country,u.created_at,(SELECT COUNT(*) FROM user_roles r WHERE r.user_id=u.id AND r.role='admin') AS is_admin FROM users u",['u.name','u.email','u.company','u.country'],'u.id'),
- 'products':("SELECT p.id,p.title,p.category,p.price,p.currency,p.moq,p.stock,p.origin,p.active,p.supplier_id,u.company AS supplier FROM products p JOIN users u ON u.id=p.supplier_id",['p.title','p.category','p.origin','u.company'],'p.id'),
+ 'products':("SELECT p.id,p.title,p.category,p.price,p.currency,p.moq,p.stock,p.origin,p.active,u.company AS supplier FROM products p JOIN users u ON u.id=p.supplier_id",['p.title','p.category','p.origin','u.company'],'p.id'),
  'suppliers':("SELECT s.user_id,s.company,s.country,s.verified,u.email,(SELECT COUNT(*) FROM products p WHERE p.supplier_id=s.user_id) AS products FROM suppliers s JOIN users u ON u.id=s.user_id",['s.company','s.country','u.email'],'s.user_id'),
  'orders':("SELECT o.id,o.buyer_id,u.email AS buyer,o.total,o.currency,o.status,o.created_at FROM orders o JOIN users u ON u.id=o.buyer_id",['u.email','o.status'],'o.id DESC'),
  'events':("SELECT i.id,i.user_id,u.email AS user_email,i.product_id,p.title AS product,i.event_type,i.created_at FROM interactions i JOIN users u ON u.id=i.user_id JOIN products p ON p.id=i.product_id",['u.email','p.title','i.event_type'],'i.id DESC'),
