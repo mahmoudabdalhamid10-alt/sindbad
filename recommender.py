@@ -133,6 +133,24 @@ class Recommender:
         return [(self.ids[j], float(score[j])) for j in np.argsort(-score)[:k] if np.isfinite(score[j])]
 
 
+def _explain(self, history, pid, weights=None):
+    """The history item that contributed most to recommending pid (for the reason text)."""
+    if pid not in self.index:
+        return None
+    j = self.index[pid]
+    B = self.blend(weights)
+    best, best_v = None, 0.0
+    for q, w in history.items():
+        if q in self.index and q != pid:
+            v = w * B[self.index[q], j]
+            if v > best_v:
+                best, best_v = q, v
+    return best
+
+
+Recommender.explain = _explain
+
+
 def load_synthetic(path):
     """Read data/synthetic_interactions.txt into (user, product_id, event_type) triples."""
     names = {'v': 'view', 'c': 'click', 'a': 'cart', 'p': 'purchase'}
