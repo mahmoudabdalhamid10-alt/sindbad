@@ -24,9 +24,10 @@ def test_health_and_catalogue(client):
     assert len(client.get("/api/categories").json()) == 8
 
 
-def test_seed_images_are_local_category_art(client):
+def test_seed_images_are_local(client):
     for p in client.get("/api/products?limit=200").json():
-        assert p["image"].startswith("/static/art/"), p["title"]
+        assert p["image"].startswith(("/static/art/", "/photo/")), p["title"]
+        assert client.get(p["image"]).status_code == 200, p["image"]
     assert client.get("/static/art/electronics.svg").status_code == 200
 
 
@@ -95,3 +96,10 @@ def test_recommendations_envelope(client):
     data = client.get("/api/recommendations?limit=5").json()
     assert {"items", "strategy", "model", "personalized"} <= set(data)
     assert 0 < len(data["items"]) <= 5
+
+
+def test_product_photo_served(client):
+    r = client.get('/photo/1.jpg')
+    assert r.status_code == 200 and r.headers['content-type'] == 'image/jpeg'
+    assert r.content[:2] == b'\xff\xd8'
+    assert client.get('/photo/99999.jpg').status_code == 404
