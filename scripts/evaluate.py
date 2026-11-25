@@ -6,13 +6,13 @@ for the hidden item. Buyers are split in two halves: the blend weights are chose
 and the numbers in the table come from the second half (test).
 Run:  python scripts/evaluate.py
 """
-import csv, itertools, json, os, random, sys
+import itertools, json, os, random, sys
 import numpy as np
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.join(ROOT, 'scripts'))
-from recommender import Recommender, EVENT_WEIGHTS  # noqa: E402
+from recommender import Recommender, EVENT_WEIGHTS, load_synthetic  # noqa: E402
 import make_synthetic  # noqa: E402
 
 K = 10
@@ -22,8 +22,7 @@ def load():
     c = __import__('sqlite3').connect(os.path.join(ROOT, 'sindbad.db'))
     c.row_factory = __import__('sqlite3').Row
     products = [dict(r) for r in c.execute('SELECT id,title,category,tags FROM products ORDER BY id')]
-    rows = list(csv.DictReader(open(os.path.join(ROOT, 'data', 'synthetic_interactions.csv'))))
-    return products, [(r['user_id'], int(r['product_id']), r['event_type']) for r in rows]
+    return products, load_synthetic(os.path.join(ROOT, 'data', 'synthetic_interactions.txt'))
 
 
 def split_holdout(inter, seed=11, keep=1.0):
