@@ -152,13 +152,20 @@ async function loadRecos(){
     if(!d.items||!d.items.length)return;
     $('#recoWrap').classList.remove('hidden');
     $('#recoStrategy').textContent=d.model+(d.personalized?' · '+t('recoTitle'):'');
+    $('#recoRow').classList.remove('reco-flash');void $('#recoRow').offsetWidth;$('#recoRow').classList.add('reco-flash');
     $('#recoRow').innerHTML=d.items.map(p=>card(p).replace('</article>',`<div class="reco-reason" style="padding:0 14px 12px">${esc(p.recommendation_reason||'')}</div></article>`)).join('');
   }catch(e){}
 }
 
+let recoTimer;
+function trackEvent(id,type){
+  if(!state.user||state.user.role!=='buyer')return;
+  api('/api/interactions',{method:'POST',body:{product_id:id,event_type:type}}).then(()=>{clearTimeout(recoTimer);recoTimer=setTimeout(loadRecos,600);}).catch(()=>{});
+}
 async function openProduct(id){
   try{
     const p=await api('/api/products/'+id);
+    trackEvent(id,'click');
     const inCart=state.cart.find(c=>c.product_id===id);
     $('#productDetail').innerHTML=`<div class="detail-grid">
       <img src="${esc(p.image)}" alt="${esc(p.title)}" onerror="this.style.display='none'">
@@ -206,7 +213,7 @@ async function toggleFav(id,btn){
     const d=await api('/api/favorites/'+id,{method:'POST'});
     if(d.saved){state.favIds.add(id);btn.classList.add('active');btn.textContent='★';}
     else{state.favIds.delete(id);btn.classList.remove('active');btn.textContent='☆';}
-    renderCartCount();
+    renderCartCount();clearTimeout(recoTimer);recoTimer=setTimeout(loadRecos,600);
   }catch(err){toast(err.message,true);}
 }
 window.toggleFav=toggleFav;
@@ -223,7 +230,7 @@ async function addToCart(id,moq){
     const p=await api('/api/products/'+id);
     state.cart.push({product_id:id,quantity:qty,title:p.title,price:p.price,moq:p.moq,stock:p.stock,image:p.image});
   }
-  api('/api/interactions',{method:'POST',body:{product_id:id,event_type:'cart'}}).catch(()=>{});
+  trackEvent(id,'cart');
   saveCart();toast(t('addCart')+' ✓');
 }
 window.addToCart=addToCart;
