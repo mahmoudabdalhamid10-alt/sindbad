@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 from recommender import Recommender, DEFAULT_WEIGHTS, load_synthetic
+import dbcompat
 import base64, sqlite3, os, hashlib, hmac, secrets, json
 from datetime import datetime, timedelta
 
@@ -22,7 +23,7 @@ if os.path.isdir(_pd):
 app.mount('/static',StaticFiles(directory=os.path.join(BASE,'static')),name='static')
 
 def db():
-    c=sqlite3.connect(DB); c.row_factory=sqlite3.Row; c.execute('PRAGMA foreign_keys=ON'); return c
+    return dbcompat.connect(DB)
 
 def pw_hash(password,salt): return hashlib.pbkdf2_hmac('sha256',password.encode(),bytes.fromhex(salt),180000).hex()
 def token_for(uid):
@@ -55,6 +56,37 @@ class RFQIn(BaseModel): title:str; details:str=''; quantity:int=Field(default=1,
 class EventIn(BaseModel): product_id:int; event_type:str='view'
 
 
+def sync_accounts(c):
+ """Keep roles / user_roles / suppliers in step with users (idempotent)."""
+ now=datetime.utcnow().isoformat()
+ for name,desc in [('buyer','Buys products, sends RFQs'),('supplier','Lists products, answers RFQs'),('admin','Can see users, events and recommender stats')]:
+  if not c.execute('SELECT 1 FROM roles WHERE name=?',(name,)).fetchone():c.execute('INSERT INTO roles(name,description) VALUES(?,?)',(name,desc))
+ c.execute('INSERT INTO user_roles(user_id,role,granted_at) SELECT id,role,? FROM users WHERE NOT EXISTS(SELECT 1 FROM user_roles ur WHERE ur.user_id=users.id AND ur.role=users.role)',(now,))
+ c.execute("INSERT INTO suppliers(user_id,company,country,verified,created_at) SELECT id,company,country,0,? FROM users WHERE role='supplier' AND NOT EXISTS(SELECT 1 FROM suppliers s WHERE s.user_id=users.id)",(now,))
+RESOURCES=[('products','table','Product catalogue (120 demo listings).','seeded in main.py',0,'content model, similar items'),
+ ('interactions','table','Real events from signed-in users: view, click, cart, favorite, purchase.','app usage',0,'item-item CF, SVD, personalised row'),
+ ('synthetic_interactions','table','Labelled SYNTHETIC buyer events (8 planted segments) so the collaborative models have something to learn from.','scripts/make_synthetic.py',1,'item-item CF, SVD, evaluation'),
+ ('event_types','table','Weight of each event type (view 1 ... purchase 5).','recommender.py',0,'all collaborative models'),
+ ('favorites','table','Saved products per user.','app usage',0,'personalised row'),
+ ('roles / user_roles','table','Roles (buyer, supplier, admin) and who has them.','app usage',0,'access control'),
+ ('suppliers','table','Supplier profiles.','derived from users',0,'catalogue'),
+ ('docs/evaluation.json','dataset','Offline evaluation results (HitRate@10, NDCG@10).','scripts/evaluate.py',1,'README, /api/ml/info')]
+def seed_reference_data(c):
+ from recommender import EVENT_WEIGHTS, load_synthetic
+ sync_accounts(c)
+ for name,w in EVENT_WEIGHTS.items():
+  if not c.execute('SELECT 1 FROM event_types WHERE name=?',(name,)).fetchone():c.execute('INSERT INTO event_types(name,weight,description) VALUES(?,?,?)',(name,w,'interaction weight used by the recommender'))
+ for name,kind,desc,src,syn,used in RESOURCES:
+  if not c.execute('SELECT 1 FROM resources WHERE name=?',(name,)).fetchone():c.execute('INSERT INTO resources(name,kind,description,source,is_synthetic,used_by) VALUES(?,?,?,?,?,?)',(name,kind,desc,src,syn,used))
+ f=os.path.join(BASE,'data','synthetic_interactions.txt')
+ if os.path.exists(f) and c.execute('SELECT COUNT(*) n FROM synthetic_interactions').fetchone()['n']==0:
+  seg={}
+  for line in open(f):
+   p=line.split()
+   if len(p)>2 and not line.startswith('#'):seg[p[0]]=int(p[1])
+  have={r['id'] for r in c.execute('SELECT id FROM products').fetchall()}
+  rows=[(u,seg.get(u),pid,ev,1) for u,pid,ev in load_synthetic(f) if pid in have]
+  for i in range(0,len(rows),2000):c.executemany('INSERT INTO synthetic_interactions(user_key,segment_index,product_id,event_type,is_synthetic) VALUES(?,?,?,?,?)',rows[i:i+2000])
 def init_db():
  c=db(); q=c.cursor(); q.executescript('''
  CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY,name TEXT NOT NULL,email TEXT UNIQUE NOT NULL,salt TEXT NOT NULL,password_hash TEXT NOT NULL,role TEXT NOT NULL CHECK(role IN ('buyer','supplier')),company TEXT NOT NULL,country TEXT DEFAULT '',created_at TEXT NOT NULL);
@@ -65,6 +97,12 @@ def init_db():
  CREATE TABLE IF NOT EXISTS favorites(user_id INTEGER NOT NULL REFERENCES users(id),product_id INTEGER NOT NULL REFERENCES products(id),created_at TEXT NOT NULL,PRIMARY KEY(user_id,product_id));
  CREATE TABLE IF NOT EXISTS interactions(id INTEGER PRIMARY KEY,user_id INTEGER NOT NULL REFERENCES users(id),product_id INTEGER NOT NULL REFERENCES products(id),event_type TEXT NOT NULL,created_at TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS quotations(id INTEGER PRIMARY KEY,rfq_id INTEGER NOT NULL REFERENCES rfqs(id),supplier_id INTEGER NOT NULL REFERENCES users(id),price REAL NOT NULL,currency TEXT NOT NULL DEFAULT 'USD',lead_time TEXT DEFAULT '',notes TEXT DEFAULT '',created_at TEXT NOT NULL,UNIQUE(rfq_id,supplier_id));
+ CREATE TABLE IF NOT EXISTS roles(name TEXT PRIMARY KEY,description TEXT NOT NULL);
+ CREATE TABLE IF NOT EXISTS user_roles(user_id INTEGER NOT NULL REFERENCES users(id),role TEXT NOT NULL REFERENCES roles(name),granted_at TEXT NOT NULL,PRIMARY KEY(user_id,role));
+ CREATE TABLE IF NOT EXISTS suppliers(user_id INTEGER PRIMARY KEY REFERENCES users(id),company TEXT NOT NULL,country TEXT DEFAULT '',verified INTEGER DEFAULT 0,created_at TEXT NOT NULL);
+ CREATE TABLE IF NOT EXISTS event_types(name TEXT PRIMARY KEY,weight REAL NOT NULL,description TEXT DEFAULT '');
+ CREATE TABLE IF NOT EXISTS synthetic_interactions(id INTEGER PRIMARY KEY,user_key TEXT NOT NULL,segment_index INTEGER,product_id INTEGER NOT NULL REFERENCES products(id),event_type TEXT NOT NULL,is_synthetic INTEGER NOT NULL DEFAULT 1);
+ CREATE TABLE IF NOT EXISTS resources(id INTEGER PRIMARY KEY,name TEXT UNIQUE NOT NULL,kind TEXT NOT NULL,description TEXT DEFAULT '',source TEXT DEFAULT '',is_synthetic INTEGER DEFAULT 0,used_by TEXT DEFAULT '');
  CREATE INDEX IF NOT EXISTS idx_products_category ON products(category); CREATE INDEX IF NOT EXISTS idx_interactions_user ON interactions(user_id,created_at);
  ''')
  # Safe schema upgrades for databases created by earlier builds
@@ -139,6 +177,7 @@ def init_db():
   q.execute("UPDATE products SET image=? WHERE category=? AND image LIKE 'https://images.unsplash.com/%'",('/static/art/'+slug+'.svg',cat))
  for pid in PHOTOS:
   q.execute("UPDATE products SET image=? WHERE id=? AND image LIKE '/static/art/%'",('/photo/%d.jpg'%pid,pid))
+ seed_reference_data(c)
  c.commit(); c.close()
 init_db()
 
@@ -156,8 +195,8 @@ def register(x:Register,response:Response):
  if x.role not in ('buyer','supplier'):raise HTTPException(400,'Choose buyer or supplier')
  salt=secrets.token_hex(16); c=db()
  try:
-  cur=c.execute('INSERT INTO users(name,email,salt,password_hash,role,company,country,created_at) VALUES(?,?,?,?,?,?,?,?)',(x.name,x.email.lower(),salt,pw_hash(x.password,salt),x.role,x.company,x.country,datetime.utcnow().isoformat())); c.commit(); uid=cur.lastrowid
- except sqlite3.IntegrityError:c.close();raise HTTPException(409,'An account with this email already exists')
+  cur=c.execute('INSERT INTO users(name,email,salt,password_hash,role,company,country,created_at) VALUES(?,?,?,?,?,?,?,?)',(x.name,x.email.lower(),salt,pw_hash(x.password,salt),x.role,x.company,x.country,datetime.utcnow().isoformat())); sync_accounts(c); c.commit(); uid=cur.lastrowid
+ except dbcompat.IntegrityError:c.close();raise HTTPException(409,'An account with this email already exists')
  c.close();response.set_cookie('sindbad_session',token_for(uid),httponly=True,samesite='lax',max_age=604800);return {'ok':True,'user':user_by_id(uid)}
 @app.post('/api/login')
 def login(x:Login,response:Response):
@@ -215,9 +254,9 @@ def ml_model():
  real=[('real%d'%r['user_id'],r['product_id'],r['event_type']) for r in c.execute('SELECT user_id,product_id,event_type FROM interactions')];c.close()
  key=(len(prods),len(real))
  if _ML['key']!=key:
-  syn=[]
+  c=db();syn=[(r['user_key'],r['product_id'],r['event_type']) for r in c.execute('SELECT user_key,product_id,event_type FROM synthetic_interactions').fetchall()];c.close()
   f=os.path.join(BASE,'data','synthetic_interactions.txt')
-  if os.path.exists(f):syn=load_synthetic(f)
+  if not syn and os.path.exists(f):syn=load_synthetic(f)
   _ML['model']=Recommender().fit(prods,syn+real);_ML['key']=key
  return _ML['model']
 @app.get('/api/products/{pid}/similar')
@@ -231,6 +270,11 @@ def similar_products(pid:int,k:int=6):
    d=dict(r);parts=h['parts'];tot=sum(parts.values()) or 1
    d['similarity']=h['score'];d['reason']={'bought_together':round(100*(parts['item_knn']+parts['svd'])/tot),'similar_text':round(100*parts['content']/tot)};out.append(d)
  c.close();return {'items':out,'model':'hybrid: tf-idf content + item-knn + svd'}
+@app.get('/api/resources')
+def resources():
+ c=db();rows=[dict(r) for r in c.execute('SELECT name,kind,description,source,is_synthetic,used_by FROM resources ORDER BY id').fetchall()]
+ counts={t:c.execute('SELECT COUNT(*) n FROM '+t).fetchone()['n'] for t in ('users','products','interactions','synthetic_interactions','favorites','event_types','roles','user_roles','suppliers','orders')}
+ c.close();return {'resources':rows,'row_counts':counts,'backend':'postgresql' if dbcompat.USE_PG else 'sqlite'}
 @app.get('/api/ml/info')
 def ml_info():
  f=os.path.join(BASE,'docs','evaluation.json')
@@ -345,7 +389,7 @@ def submit_quote(rfq_id:int,x:QuoteIn,u=Depends(require_user)):
  if not rfq:c.close();raise HTTPException(404,'Open RFQ not found')
  try:
   cur=c.execute('INSERT INTO quotations(rfq_id,supplier_id,price,currency,lead_time,notes,created_at) VALUES(?,?,?,?,?,?,?)',(rfq_id,u['id'],x.price,x.currency,x.lead_time,x.notes,datetime.utcnow().isoformat()));c.commit();qid=cur.lastrowid
- except sqlite3.IntegrityError:c.close();raise HTTPException(409,'You already submitted a quotation for this request')
+ except dbcompat.IntegrityError:c.close();raise HTTPException(409,'You already submitted a quotation for this request')
  c.close();return {'ok':True,'quote_id':qid}
 
 @app.get('/api/rfqs/{rfq_id}/quotes')
