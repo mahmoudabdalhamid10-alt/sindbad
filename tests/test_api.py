@@ -187,3 +187,29 @@ def test_admin_db_viewer_is_admin_only_and_hides_secrets(client):
     assert rows and all(r['password_hash'] == '(hidden)' and r['salt'] == '(hidden)' for r in rows)
     assert client.get('/api/admin/db/sqlite_master').status_code == 404
     assert client.get('/admin/db').status_code == 200
+
+
+def test_admin_dashboard_api(client):
+    client.post('/api/register', json={'name': 'Ann Admin', 'email': 'ann2@example.com', 'password': 'longpass123', 'role': 'buyer', 'company': 'Ann Co', 'country': 'Egypt'})
+    assert client.get('/api/admin/stats').status_code == 403
+    c = main.db()
+    uid = c.execute("SELECT id FROM users WHERE email='ann2@example.com'").fetchone()['id']
+    sup = c.execute("SELECT id FROM users WHERE role='supplier' ORDER BY id").fetchone()['id']
+    c.execute("INSERT INTO user_roles(user_id,role,granted_at) VALUES(?,?,?)", (uid, 'admin', 'now')); c.commit(); c.close()
+    s = client.get('/api/admin/stats').json()
+    assert s['products'] == 120 and s['admins'] >= 1
+    d = client.get('/api/admin/list/products?q=olive&limit=5').json()
+    assert d['total'] >= 1 and all('olive' in r['title'].lower() or 'olive' in r['category'].lower() or 'olive' in (r['origin'] or '').lower() or 'olive' in r['supplier'].lower() for r in d['rows'])
+    assert client.get('/api/admin/list/nope').status_code == 404
+    body = {'supplier_id': sup, 'title': 'Admin test widget', 'category': 'Test', 'price': 9.5, 'stock': 5}
+    pid = client.post('/api/admin/products', json=body).json()['id']
+    body['price'] = 12.0
+    assert client.put('/api/admin/products/%d' % pid, json=body).status_code == 200
+    assert client.get('/api/admin/products/%d' % pid).json()['price'] == 12.0
+    assert client.post('/api/admin/products', json=dict(body, supplier_id=uid)).status_code == 400
+    assert client.delete('/api/admin/products/%d' % pid).status_code == 200
+    assert client.get('/api/products/%d' % pid).status_code == 404
+    assert client.post('/api/admin/users/%d/admin' % uid, json={'admin': False}).status_code == 400
+    assert client.post('/api/admin/users/%d/admin' % sup, json={'admin': True}).status_code == 200
+    assert client.get('/api/admin/list/users').json()['total'] >= 4
+    assert client.get('/admin').status_code == 200
