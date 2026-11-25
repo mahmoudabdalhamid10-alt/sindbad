@@ -30,7 +30,9 @@ def token_for(uid):
     payload=f'{uid}:{int((datetime.utcnow()+timedelta(days=7)).timestamp())}'
     return payload+'.'+hmac.new(SECRET,payload.encode(),'sha256').hexdigest()
 def user_by_id(uid):
-    c=db(); r=c.execute('SELECT id,name,email,role,company,country,created_at FROM users WHERE id=?',(uid,)).fetchone(); c.close(); return dict(r) if r else None
+    c=db(); r=c.execute('SELECT id,name,email,role,company,country,created_at FROM users WHERE id=?',(uid,)).fetchone(); a=c.execute("SELECT 1 FROM user_roles WHERE user_id=? AND role='admin'",(uid,)).fetchone() if r else None; c.close()
+    if not r:return None
+    d=dict(r); d['is_admin']=bool(a); return d
 def current_user(request:Request):
     tok=request.cookies.get('sindbad_session')
     if not tok:return None
