@@ -4,7 +4,7 @@ const state={user:null,lang:localStorage.getItem('sb_lang')||'en',cart:JSON.pars
 
 const I18N={
 en:{tagline:'Global B2B Marketplace',navMarket:'Marketplace',navSuppliers:'Suppliers',navRfqs:'Buying requests',navDashboard:'Dashboard',signIn:'Sign in',signOut:'Sign out',
-heroTitle:'Source wholesale products from verified suppliers',heroSub:'A bilingual B2B sourcing marketplace with RFQs, quotations and AI-powered recommendations.',
+heroTitle:'Source wholesale products from suppliers worldwide',heroSub:'A bilingual B2B sourcing marketplace with RFQs, quotations and AI-powered recommendations.',
 recoTitle:'Recommended for you',searchPh:'Search products, suppliers, tags...',allCategories:'All categories',allOrigins:'All origins',minPrice:'Min $',maxPrice:'Max $',
 sortNew:'Newest',sortPriceAsc:'Price: low to high',sortPriceDesc:'Price: high to low',noProducts:'No products match these filters.',
 suppliersTitle:'Supplier directory',supplierSearchPh:'Search by company or country...',products:'products',
@@ -19,7 +19,7 @@ orderOk:'Demo order placed. No payment was collected.',needBuyer:'A buyer accoun
 quotesFor:'Quotations for',noQuotes:'No quotations yet.',best:'Best price',submitQuote:'Submit quotation',pricePh:'Your price (USD)',leadPh:'Lead time',notesPh:'Notes (optional)',quoteOk:'Quotation submitted.',
 rfqOk:'Buying request published.',qty:'Qty',edit:'Edit',remove:'Delete',viewQuotes:'Compare quotes',close:'Close',from:'from',ordersEmpty:'No orders yet.',favsEmpty:'No favorites yet.',productsEmpty:'No products yet.',rfqsEmpty:'No requests yet.',langBtn:'عربي'},
 ar:{tagline:'سوق عالمي بين الشركات',navMarket:'السوق',navSuppliers:'الموردون',navRfqs:'طلبات الشراء',navDashboard:'لوحة التحكم',signIn:'تسجيل الدخول',signOut:'تسجيل الخروج',
-heroTitle:'استورد منتجات الجملة من موردين موثوقين',heroSub:'سوق B2B ثنائي اللغة مع طلبات تسعير وعروض وتوصيات ذكية.',
+heroTitle:'استورد منتجات الجملة من موردين حول العالم',heroSub:'سوق B2B ثنائي اللغة مع طلبات تسعير وعروض وتوصيات ذكية.',
 recoTitle:'مقترح لك',searchPh:'ابحث عن منتجات أو موردين أو كلمات...',allCategories:'كل الفئات',allOrigins:'كل البلدان',minPrice:'أقل $',maxPrice:'أعلى $',
 sortNew:'الأحدث',sortPriceAsc:'السعر: من الأقل',sortPriceDesc:'السعر: من الأعلى',noProducts:'لا توجد منتجات مطابقة.',
 suppliersTitle:'دليل الموردين',supplierSearchPh:'ابحث بالشركة أو البلد...',products:'منتج',
