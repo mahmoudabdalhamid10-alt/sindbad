@@ -109,3 +109,5 @@ h2{font-size:18px;margin:18px 0 10px;color:var(--cyan)}
 .toast.err{border-color:var(--red)}
 .quote-best{border-color:var(--green)}
 .quote-best .badge{color:var(--green);border-color:var(--green)}
+
+@media(max-width:640px){.topbar{gap:10px;padding:10px 14px}.topnav{order:3;flex:1 0 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.nav-btn{white-space:nowrap}.top-actions{margin-left:auto}}
