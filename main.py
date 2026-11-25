@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Request, Response, Depends
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
-import sqlite3, os, hashlib, hmac, secrets, json
+import base64, sqlite3, os, hashlib, hmac, secrets, json
 from datetime import datetime, timedelta
 
 BASE=os.path.dirname(os.path.abspath(__file__))
@@ -10,6 +10,14 @@ DB=os.path.join(BASE,'sindbad.db')
 SECRET=os.environ.get('SINDBAD_SECRET','local-dev-change-before-deployment').encode()
 app=FastAPI(title='Sindbad | AI-powered Global B2B Marketplace',version='2.0.0')
 CATEGORY_ART={'Electronics':'electronics','Apparel & Textiles':'apparel','Home & Kitchen':'home-kitchen','Food & Agriculture':'food','Safety & PPE':'safety','Sports & Outdoors':'sports','Packaging':'packaging','Industrial Equipment':'industrial'}
+PHOTOS={}
+_pd=os.path.join(BASE,'photos')
+if os.path.isdir(_pd):
+ for _f in sorted(os.listdir(_pd)):
+  if _f.endswith('.txt'):
+   for _l in open(os.path.join(_pd,_f)):
+    _p=_l.split()
+    if len(_p)==2 and _p[0].isdigit():PHOTOS[int(_p[0])]=base64.b64decode(_p[1])
 app.mount('/static',StaticFiles(directory=os.path.join(BASE,'static')),name='static')
 
 def db():
@@ -128,8 +136,15 @@ def init_db():
  # Seed photos were hot-linked stock images that did not match the products. Use local category art instead.
  for cat,slug in CATEGORY_ART.items():
   q.execute("UPDATE products SET image=? WHERE category=? AND image LIKE 'https://images.unsplash.com/%'",('/static/art/'+slug+'.svg',cat))
+ for pid in PHOTOS:
+  q.execute("UPDATE products SET image=? WHERE id=? AND image LIKE '/static/art/%'",('/photo/%d.jpg'%pid,pid))
  c.commit(); c.close()
 init_db()
+
+@app.get('/photo/{pid}.jpg')
+def photo(pid:int):
+ if pid not in PHOTOS:raise HTTPException(404,'No photo')
+ return Response(PHOTOS[pid],media_type='image/jpeg',headers={'Cache-Control':'public, max-age=86400'})
 
 @app.get('/')
 def home():return FileResponse(os.path.join(BASE,'static','index.html'))
