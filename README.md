@@ -10,6 +10,8 @@
 
 <sub>Artwork is illustrative.</sub>
 
+![Sindbad marketplace home page](docs/screenshot.svg)
+
 ## Run on Windows
 
 1. Install Python 3.10+ (Python 3.13 is supported).
