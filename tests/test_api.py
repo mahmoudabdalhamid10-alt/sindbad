@@ -103,3 +103,12 @@ def test_product_photo_served(client):
     assert r.status_code == 200 and r.headers['content-type'] == 'image/jpeg'
     assert r.content[:2] == b'\xff\xd8'
     assert client.get('/photo/99999.jpg').status_code == 404
+
+
+def test_similar_products_endpoint(client):
+    r = client.get('/api/products/1/similar?k=5')
+    assert r.status_code == 200
+    items = r.json()['items']
+    assert len(items) == 5 and all(i['id'] != 1 for i in items)
+    assert set(items[0]['reason']) == {'bought_together', 'similar_text'}
+    assert client.get('/api/products/99999/similar').status_code == 404
