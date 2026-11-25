@@ -6,9 +6,27 @@ import main
 
 @pytest.fixture()
 def client(tmp_path, monkeypatch):
-    monkeypatch.setattr(main, "DB", str(tmp_path / "test.db"))
-    main.init_db()
-    return TestClient(main.app)
+    import dbcompat
+    main._ML["key"] = None
+    if dbcompat.USE_PG:
+        # Same tests against PostgreSQL: every test gets its own throw-away schema.
+        import uuid, psycopg2
+        schema = "t_" + uuid.uuid4().hex[:10]
+        admin = psycopg2.connect(dbcompat.DATABASE_URL)
+        admin.autocommit = True
+        admin.cursor().execute("CREATE SCHEMA " + schema)
+        monkeypatch.setattr(dbcompat, "SCHEMA", schema)
+        monkeypatch.setattr(dbcompat, "_pool", None)
+        main.init_db()
+        yield TestClient(main.app)
+        if dbcompat._pool:
+            dbcompat._pool.closeall()
+        admin.cursor().execute("DROP SCHEMA " + schema + " CASCADE")
+        admin.close()
+    else:
+        monkeypatch.setattr(main, "DB", str(tmp_path / "test.db"))
+        main.init_db()
+        yield TestClient(main.app)
 
 
 def login(client, email, password):
@@ -133,3 +151,24 @@ def test_recommendations_change_after_user_activity(client):
     assert not {13, 1, 22, 11} & set(ids)            # items already touched are not recommended back
     assert ids != [i['id'] for i in before['items']]  # the row actually changed
     assert all(i['recommendation_reason'].startswith('Because you showed interest in') for i in after['items'])
+
+
+def test_schema_has_users_roles_suppliers_events_and_resources(client):
+    d = client.get('/api/resources').json()
+    counts = d['row_counts']
+    assert counts['products'] == 120 and counts['roles'] == 3 and counts['event_types'] == 5
+    assert counts['user_roles'] >= counts['users'] > 0 and counts['suppliers'] >= 3
+    assert counts['synthetic_interactions'] > 8000
+    syn = [r for r in d['resources'] if r['name'] == 'synthetic_interactions'][0]
+    assert syn['is_synthetic'] == 1
+    assert d['backend'] in ('sqlite', 'postgresql')
+
+
+def test_new_signup_gets_role_and_supplier_rows(client):
+    r = client.post('/api/register', json={'name': 'Sam', 'email': 'sam@example.com', 'password': 'longpass123', 'role': 'supplier', 'company': 'Sam Trading', 'country': 'Egypt'})
+    assert r.status_code == 200, r.text
+    c = main.db()
+    uid = c.execute("SELECT id FROM users WHERE email='sam@example.com'").fetchone()['id']
+    assert c.execute('SELECT role FROM user_roles WHERE user_id=?', (uid,)).fetchone()['role'] == 'supplier'
+    assert c.execute('SELECT company FROM suppliers WHERE user_id=?', (uid,)).fetchone()['company'] == 'Sam Trading'
+    c.close()
