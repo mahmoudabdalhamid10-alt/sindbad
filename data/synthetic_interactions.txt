@@ -1,0 +1,481 @@
+# SYNTHETIC data. line = user segment_index product_id:events ... (v view, c click, a cart, p purchase)
+syn0 0 4:v 6:vc 14:vc 42:v 48:v 51:vca 55:va 58:vc
+syn1 1 1:vc 11:vc 16:vc 45:v 80:vc 81:v 109:vcap 110:vc 115:v 120:vca
+syn2 2 3:vcp 9:vcap 16:vca 27:va 28:vcp 29:v 33:vcap 34:vca 80:vca 88:va 89:vc
+syn3 3 11:va 17:vcp 23:v 61:va 64:va 65:vc 66:v 67:vcp 71:vp 72:va 101:vcp 105:vc
+syn4 4 2:v 5:v 10:v 37:v 46:vc 47:v 101:v 103:vca
+syn5 5 8:vc 60:vc 83:vc 85:vca 87:va 92:vca
+syn6 6 1:v 14:v 24:vca 38:vc 41:vc 42:va 58:vp 75:v 83:v 84:vca
+syn7 7 1:va 15:vcp 28:vc 71:v 110:v 120:vc
+syn8 0 4:v 42:vp 48:vc 49:vcp 53:vc 55:vcp 58:vp
+syn9 1 1:vca 22:vca 26:v 37:vp 39:vc 45:vc 64:vca 74:vc 81:vc 109:vc
+syn10 2 3:v 26:vc 27:va 31:vc 33:vc 34:vc 35:vca 57:va 92:vc
+syn11 3 6:vc 12:va 17:v 50:vca 58:v 61:vc 66:vcp 67:v 71:va 72:vca
+syn12 4 2:v 7:vca 10:v 37:vc 47:vca 101:vap
+syn13 5 8:vap 87:v 88:vc 89:vcap 90:vca 92:v 93:v 94:vcap
+syn14 6 1:vc 25:vc 42:vcap 74:v 75:va 84:v
+syn15 7 1:vcap 10:vc 11:vc 21:v 39:va 50:vc 112:va 115:vca 116:v 119:v 120:v
+syn16 0 4:vca 14:vcp 42:v 53:v 55:vap 58:vc
+syn17 1 1:vca 11:va 13:v 39:vc 45:vca 78:vc 79:va 80:vc 81:va 103:vc 115:vca 120:va
+syn18 2 3:vca 9:vap 16:va 18:v 27:vc 28:vc 32:v 33:v 34:va 35:vc 57:vc 84:va
+syn19 3 33:va 62:v 68:vca 72:vc 81:v 95:vp
+syn20 4 2:vc 5:vcap 10:va 37:va 46:v 97:v
+syn21 5 6:vc 8:vc 14:v 18:vc 19:vc 88:va 91:vc
+syn22 6 1:vca 25:vc 38:vc 43:vcap 48:va 58:vap 61:vap 74:vc 82:vc 84:v 96:v 118:vca
+syn23 7 1:vca 7:vca 11:vc 39:v 76:vc 109:vcp 112:vca 113:v 115:vc 118:v 119:vc 120:v
+syn24 0 14:va 17:va 42:vcap 49:vca 53:vc 55:vp 63:v
+syn25 1 1:vc 11:v 13:vca 22:va 45:vc 78:vc 81:vca 87:vc 90:vc 109:va 120:v
+syn26 2 3:v 9:v 16:v 25:vc 27:vc 33:vcp 34:v 35:v 36:vap 46:vc 98:va
+syn27 3 6:va 7:va 12:v 61:v 63:va 65:v 66:vc 68:va 70:vc 71:vc 72:va 78:v
+syn28 4 2:vc 37:vca 46:vcp 47:vc 97:vcap 101:v 102:vc 107:v
+syn29 5 8:vc 12:vc 18:v 20:vp 85:vca 87:v 89:vc 91:v 94:v
+syn30 6 1:vc 42:va 58:vc 74:vc 83:vca 84:v 101:vc
+syn31 7 40:v 45:vca 79:vp 112:v 113:v 114:v 118:vca
+syn32 0 4:vca 9:vc 32:v 38:vca 48:vap 49:vc 55:vp 58:v 63:vap 82:v 111:vc
+syn33 1 13:v 45:vp 60:vc 74:vca 114:vc 120:vc
+syn34 2 9:vc 25:vc 27:vc 28:v 35:v 57:vca 119:vca
+syn35 3 6:va 17:vc 61:vc 62:v 64:va 66:vc 67:v 69:vap 70:vp 71:va
+syn36 4 2:vap 5:vc 7:vcp 47:vp 101:v 102:v
+syn37 5 8:vca 18:vc 86:vp 87:vp 90:v 92:v 93:vcap 95:vcap 96:vc
+syn38 6 1:vc 38:vc 41:va 58:va 74:vca 84:vc
+syn39 7 11:v 39:v 87:vp 111:va 112:v 118:v
+syn40 0 2:vc 4:v 14:vca 17:vcap 39:vc 42:v 48:vc 55:v 58:vp 63:vcp 89:vca 100:vc
+syn41 1 1:v 13:vc 45:vc 51:v 53:vca 54:vca 78:v 79:vap 81:v 82:vca
+syn42 2 3:vc 9:vp 16:v 27:vc 34:vcp 75:vcp
+syn43 3 12:vca 23:vca 55:vc 61:va 62:v 67:vc 68:vcp 72:va
+syn44 4 5:vc 10:va 37:vca 42:vc 46:vc 47:v 69:vc 97:va 102:vc 103:va
+syn45 5 8:v 24:vc 73:vc 78:v 89:vc 90:v 92:v 94:v
+syn46 6 1:vc 17:vca 38:vc 41:vcp 58:v 84:v 106:v
+syn47 7 1:v 11:va 15:vca 39:va 63:v 97:vc 109:v 112:v 113:v 114:vca 115:v 119:v
+syn48 0 4:va 14:vc 23:vca 49:vc 55:v 58:vp 62:v 63:v 101:va
+syn49 1 11:v 13:v 45:v 71:vca 73:vp 74:vc 79:vcap 80:va 81:vca 109:vc 115:vp
+syn50 2 3:v 16:vca 27:vcp 29:va 33:v 35:v 36:vc 69:vc
+syn51 3 6:va 7:v 61:v 62:vc 66:v 100:v 105:v
+syn52 4 2:v 7:vca 37:v 46:vc 59:v 101:vca 102:v 103:vcap 104:vc
+syn53 5 8:vp 18:v 52:vcap 82:va 87:vc 88:v 92:vc 93:v 94:vc 95:vca
+syn54 6 1:vap 30:va 42:vc 58:v 74:va 75:vc 80:va 84:vc
+syn55 7 4:va 18:v 21:va 28:vc 30:vc 35:vcap 39:va 102:vcp 110:vcp 115:vc 118:vp
+syn56 0 4:vc 18:vca 48:v 49:vcap 55:vc 58:vp 68:v
+syn57 1 1:va 22:vc 45:vcp 50:v 74:v 96:v 106:v 109:v 110:v 120:va
+syn58 2 3:va 9:vca 27:v 34:vc 42:v 45:vp 68:v 110:vc 112:vca
+syn59 3 25:v 26:vca 33:vc 61:vc 62:va 66:v 67:vap 71:vca 92:vca 100:v
+syn60 4 2:vca 7:vc 46:vc 47:vc 97:v 101:vc 102:vca 105:v
+syn61 5 8:v 18:vc 24:vca 57:v 72:v 85:vc 87:v 92:v 93:vc 105:vca 106:vcp
+syn62 6 5:vap 41:vca 58:vc 68:vcp 75:v 77:vcp 82:vcp 84:vc
+syn63 7 11:vcap 15:vc 21:vcp 30:vc 37:vcp 39:va 62:vca 65:v 112:vcp 118:vc 119:vca
+syn64 0 2:v 4:vp 5:vc 7:vc 14:v 53:v 55:vc 58:v 87:v 97:v
+syn65 1 1:vcap 55:v 81:vc 106:vc 110:vca 120:v
+syn66 2 3:va 9:v 16:v 21:vp 25:va 26:v 27:vc 36:v 50:vc 51:va 79:va 102:vc
+syn67 3 6:vc 7:vp 12:v 62:va 66:v 67:v 71:vc 91:v 105:v 115:vc
+syn68 4 5:v 10:vp 20:v 37:v 46:vc 58:vc 98:v 102:vc 103:va
+syn69 5 49:va 87:v 88:vc 89:vca 92:vc 93:v 94:vc 95:vcp 116:vca
+syn70 6 1:vc 38:vc 41:vc 43:va 48:vca 53:vcp 58:v 75:va 84:va 103:vc
+syn71 7 15:vp 39:v 40:v 112:vca 115:vc 118:v
+syn72 0 4:v 17:vca 48:vca 49:vca 55:v 56:vca 58:vc 63:v 110:v
+syn73 1 1:v 13:vc 45:vca 78:vc 80:vap 81:v 120:v
+syn74 2 3:vca 27:va 28:v 29:va 31:va 32:vp
+syn75 3 6:v 17:v 66:va 68:v 71:vc 74:va 99:vcp 105:vc
+syn76 4 2:v 5:v 37:v 46:vca 97:v 98:va 101:vcp 102:v 103:vp
+syn77 5 8:vc 18:v 88:vc 89:va 92:vc 118:vap
+syn78 6 1:vca 38:v 47:vp 58:v 74:va 75:vcap 120:vc
+syn79 7 1:vp 11:vca 15:vp 21:vc 72:va 109:va 111:va 114:vca 120:v
+syn80 0 4:vc 14:vca 42:v 48:vc 49:v 52:v 55:va 58:vp 59:vc 63:vca 96:va
+syn81 1 1:vca 14:vc 39:v 96:v 112:v 116:va 120:v
+syn82 2 3:v 16:vc 27:v 28:vc 31:v 32:vc 33:vc 36:v 116:vp
+syn83 3 6:vap 12:vp 23:vc 61:vc 66:vca 67:vc 68:vc 69:vc 71:vp 72:vc 100:va
+syn84 4 2:v 7:vc 17:vcp 27:vc 28:v 37:vca 46:v 85:vp 97:vc 98:vc 101:vc 102:v
+syn85 5 8:vc 18:vca 72:va 80:v 85:vc 87:vc 88:va 92:va 93:vca 94:vcp 95:v
+syn86 6 1:v 2:va 38:vca 41:v 47:vca 53:va 74:vc 75:v 82:v 83:v 84:vc
+syn87 7 1:vca 9:v 15:v 21:vap 39:va 61:vp 79:vp 86:vc 112:vcp 115:vc 119:v 120:va
+syn88 0 4:vcap 17:vc 28:vca 47:vc 48:vc 49:v 55:vc 58:vc 92:vca 107:va
+syn89 1 1:va 11:v 13:v 30:vc 45:vp 74:vc 78:v 79:v 109:vca 117:va 120:vc
+syn90 2 15:vc 27:vc 28:vca 33:vc 69:vca 82:vap
+syn91 3 6:v 7:vca 12:vcp 23:vp 26:vc 61:vc 62:vc 67:v 70:vca 105:va
+syn92 4 2:vcp 5:vca 11:vc 20:vcp 37:vc 46:vc 47:vc 98:vc 103:vca 104:vc 107:v 110:va
+syn93 5 8:v 28:vap 34:va 70:v 87:v 93:vc 95:v 115:v
+syn94 6 18:v 28:vc 38:vca 41:vc 58:v 59:vc 75:vap 82:vca 84:v 88:va 118:v 119:vc
+syn95 7 4:vap 15:vc 39:vc 52:vc 79:va 118:vcp 119:vcp
+syn96 0 4:vca 14:vc 17:vc 26:vca 38:vc 42:vcap 48:vc 55:vcp 78:vp
+syn97 1 1:vc 13:vp 17:vp 22:vca 45:v 73:vc 78:vp 79:vc 81:va 105:va 115:vap
+syn98 2 26:vca 27:va 29:vc 32:vc 33:v 34:vcp 57:vc 83:v
+syn99 3 6:vca 12:vca 17:vc 61:vca 68:vp 69:vap 71:vca 103:vc 112:vca
+syn100 4 2:vc 3:va 5:vca 20:va 37:vcp 47:vca 101:v 102:vcp 103:vc 118:va
+syn101 5 8:v 22:v 24:v 85:va 87:vcap 88:vap 93:va
+syn102 6 1:vc 38:va 42:vc 48:va 58:vc 74:vc 75:v 84:va
+syn103 7 1:vc 11:v 39:vca 110:va 114:vca 118:v 119:vc 120:v
+syn104 0 4:va 14:v 27:va 38:vc 42:v 55:va 61:vc
+syn105 1 1:va 11:v 13:vc 41:vc 45:vc 74:vcap 80:vca 109:vc 115:vc 117:vcap 120:vca
+syn106 2 2:v 3:vc 9:vp 16:va 26:vc 27:vcp 29:va 31:vca 32:vp 33:v 34:vc 106:v
+syn107 3 6:va 7:v 12:va 61:vc 62:va 63:vc 66:va 67:vc 71:v 72:vc 99:vp 100:va
+syn108 4 5:vp 7:vc 37:vc 98:v 101:v 102:v
+syn109 5 8:vp 18:va 24:vca 85:v 86:vc 87:vp 89:va 92:v 93:va 95:vc
+syn110 6 1:vc 38:v 41:vc 58:vc 74:vc 75:vcp 82:vca 83:v 84:v 96:vc 101:va
+syn111 7 1:v 39:v 45:v 79:v 110:vc 111:v 113:vc 114:vp 116:vcp
+syn112 0 3:vc 4:va 14:v 17:vcp 20:va 38:va 48:vc 52:vc 55:vp 58:vc 99:vc 100:v
+syn113 1 1:va 13:vc 22:vc 39:v 45:va 74:vc 81:vc 110:vc 114:vp 120:v
+syn114 2 3:vp 16:v 25:va 26:v 27:vc 28:vc 31:vcp 33:v 34:v 62:vc 100:v
+syn115 3 6:vp 17:vcp 53:vc 61:vc 62:va 66:vc 68:vp 71:v 105:vc
+syn116 4 5:vc 37:v 47:va 98:v 101:vc 102:v 103:vca 107:vca
+syn117 5 2:vca 8:va 37:v 44:vp 88:vc 92:vp 93:v 95:vp
+syn118 6 1:vcp 38:vc 42:v 48:vc 58:vp 75:vc 83:vcap 84:va 102:v
+syn119 7 9:vc 11:vca 39:vap 79:v 85:vc 110:vcp 112:va 118:vp
+syn120 0 4:v 14:v 19:vp 42:vc 48:v 49:vc 52:vca 55:vc 58:vcap 63:v 69:vcp
+syn121 1 13:v 15:v 22:v 74:v 81:vcp 115:vc 117:v
+syn122 2 3:v 26:vca 27:vc 33:v 34:va 36:vca 42:va
+syn123 3 61:vc 62:v 68:vca 72:vp 93:vp 99:vca 100:v
+syn124 4 2:vc 25:va 37:vc 97:vca 98:v 101:vcap 102:va 107:vca
+syn125 5 8:vc 15:vca 18:vc 87:v 88:v 89:vca 91:vca 95:vc
+syn126 6 1:va 3:v 42:vca 73:v 74:vc 82:v 84:v 118:vc
+syn127 7 1:vc 6:vc 11:v 15:vc 57:v 81:vc 109:v 112:v 113:va 116:v 118:vc 119:v
+syn128 0 4:v 14:vcap 17:vc 42:v 48:v 49:vc 52:vca 55:vcp 58:v 63:vc 86:v
+syn129 1 1:vc 13:vp 45:vcap 81:vc 109:vc 120:vap
+syn130 2 9:vp 27:v 31:vc 33:vc 44:vca 94:vp
+syn131 3 6:vc 23:v 42:vc 63:va 64:vca 71:vp 72:v 82:vca 105:vc
+syn132 4 7:vc 20:vc 97:vc 104:v 107:vap 115:vcp
+syn133 5 8:va 17:v 24:vcp 65:v 86:va 90:v 91:v 92:vcp 93:va 95:v
+syn134 6 1:v 8:vc 27:v 38:vca 41:vca 51:v 58:v 74:vc 82:vca 83:v 84:vcp 100:vc
+syn135 7 1:vcp 11:vc 39:v 110:va 112:va 113:vcp 114:v 118:va 119:vca 120:vc
+syn136 0 4:vc 14:vp 38:vc 48:v 49:v 58:va 63:v 64:vca 84:vc 97:vc
+syn137 1 22:vc 56:vc 58:vca 74:vc 78:vc 109:vcp
+syn138 2 3:vc 16:vc 27:va 28:vc 29:v 33:v 35:vca 57:vc
+syn139 3 7:vcap 17:vc 62:vc 66:vca 71:vc 74:v
+syn140 4 2:va 7:vc 10:vc 37:vp 46:vc 60:va 101:vc 103:vp 114:vp
+syn141 5 8:va 24:vc 32:vap 86:va 89:va 90:v 92:vc 93:vp 95:vcp 111:vca
+syn142 6 1:vc 12:vc 38:vc 42:vc 48:vc 58:vc 74:vcp 82:vc 84:vcp 87:vc
+syn143 7 1:v 11:v 83:vc 113:vc 114:v 118:v 119:v
+syn144 0 4:vca 14:v 17:vcp 19:vc 42:vca 48:v 53:v 55:vca 58:v 70:vc 73:vcap
+syn145 1 1:v 13:v 22:v 39:v 45:v 78:vc 116:v
+syn146 2 26:vc 28:vc 29:v 34:vc 35:vc 47:vc 57:va
+syn147 3 62:va 66:vca 67:v 69:vc 71:vap 72:v 105:vc 110:v
+syn148 4 2:vca 5:va 7:v 37:vp 63:vc 98:va 101:v 103:va
+syn149 5 8:vca 59:vc 85:vp 87:vc 92:va 93:v 108:vc
+syn150 6 1:vca 6:v 51:vap 58:va 74:vca 75:v
+syn151 7 1:vp 6:vcp 11:va 15:vca 38:v 79:v 110:v 112:va 113:v 118:vcap 119:v
+syn152 0 4:va 14:vap 27:v 42:va 48:vp 56:va 63:v
+syn153 1 3:v 11:vc 39:vc 45:vap 78:vca 79:vc 109:v 110:v 117:va 120:vca
+syn154 2 3:vca 27:v 28:va 29:vc 31:vc 33:va 34:va 47:v
+syn155 3 6:v 33:v 42:vca 61:vca 62:v 64:v 66:vp 68:vca 70:vc 71:vcap 100:va 118:vc
+syn156 4 2:vca 20:vc 34:v 37:vcap 47:vp 76:vc 89:v 101:vca 102:vca 107:vap 115:vcap
+syn157 5 6:vca 8:v 87:v 88:vc 90:vc 114:va
+syn158 6 1:vap 38:vc 41:vc 42:vcp 48:vc 58:v 67:vcp 75:va 82:vc 84:v
+syn159 7 1:v 5:vca 11:v 21:va 30:vc 39:vap 96:vp 102:v 112:v 113:v 118:vca 120:vc
+syn160 0 4:va 14:vp 48:v 55:va 58:vc 78:v 103:v
+syn161 1 1:vc 10:vap 12:vc 13:v 41:vc 70:vca 72:v 76:va 81:va
+syn162 2 3:vc 16:vcp 25:vp 27:vc 29:vc 34:vca 91:vcp
+syn163 3 12:v 54:v 66:vc 71:v 87:vp 100:va
+syn164 4 2:vca 37:vc 46:vc 47:vc 68:vcp 80:vc 101:v 104:v 120:vcp
+syn165 5 8:vcp 18:v 56:v 87:v 89:vc 90:vp 92:vc
+syn166 6 1:vca 7:vcp 14:vc 27:vc 45:va 58:vcp 74:vc 82:vca 84:vcp 85:v 103:vp 109:v
+syn167 7 1:vc 11:vc 21:v 39:v 112:vc 113:v 118:v
+syn168 0 4:vc 14:vca 17:v 19:va 35:vc 42:vc 48:va 49:vc 52:vca 55:va 63:va 74:v
+syn169 1 1:va 10:vc 11:vca 13:v 39:vc 74:va 78:vc 81:v 120:va
+syn170 2 3:vp 25:v 27:vc 33:va 34:vc 36:v 52:vc
+syn171 3 6:v 62:v 63:vc 72:va 96:v 99:vc
+syn172 4 2:vca 5:vca 7:v 20:vc 23:vp 37:v 98:v 101:vap 102:vc 103:v 104:va
+syn173 5 2:v 87:vcap 88:v 89:v 93:vca 96:v
+syn174 6 1:v 41:v 48:v 75:vc 82:vc 84:vap 89:va 113:va 117:v
+syn175 7 102:vc 109:vc 110:va 112:v 113:vc 114:v 119:va 120:vcp
+syn176 0 4:vp 8:v 17:vp 38:v 42:v 48:vc 49:vcp 53:vca 55:v 58:vc 63:vc 70:vcp
+syn177 1 1:v 10:vc 11:v 13:vp 39:vp 45:vc 72:va 110:v 117:v 120:v
+syn178 2 3:vc 6:v 27:v 32:v 33:vca 34:v 57:vca 73:va 78:vc 119:vc
+syn179 3 1:vcp 6:vc 7:v 61:vap 64:va 66:vca 67:vc 71:vc 80:v
+syn180 4 2:v 23:v 46:v 91:v 101:v 102:v 104:v
+syn181 5 8:v 17:va 18:vp 23:v 24:vc 28:v 86:vap 87:va 90:vcap 92:vcp 93:vca 95:va
+syn182 6 1:vcp 7:v 38:v 42:vca 48:v 58:vc 75:va 82:v 84:va
+syn183 7 1:va 30:va 39:vc 65:vc 79:vc 109:vcp 113:vca 120:vcp
+syn184 0 4:vc 14:vcp 17:vca 38:v 42:vca 48:vp 52:vc 53:va 55:vcap 63:vc
+syn185 1 1:v 39:v 45:vc 80:v 81:vc 110:vc 117:vp 120:va
+syn186 2 3:vc 16:v 25:v 27:v 31:vc 33:vc 49:v 57:v 70:vca 119:v
+syn187 3 6:va 7:vc 12:vc 23:vc 32:v 40:vc 61:vc 62:vc 63:vc 66:v 71:vc 72:v
+syn188 4 2:v 5:vca 7:vc 10:vcap 32:v 37:v 46:vcap 47:vc 98:vc 101:vc 102:vc
+syn189 5 8:vca 18:vp 87:v 88:vcp 90:vc 92:v 93:vc
+syn190 6 1:vca 38:v 48:vp 49:v 58:v 74:vc 75:v 83:vp
+syn191 7 11:v 15:vc 39:vc 53:vc 79:vc 111:vca 112:vp 113:v 120:vap
+syn192 0 4:va 14:vc 17:vcap 42:v 48:va 49:vc 56:vc 58:vc 59:v 60:v 63:vca 93:vc
+syn193 1 1:vc 13:vc 35:vc 73:vap 81:vcap 105:v 109:vp 117:vc 120:va
+syn194 2 3:vca 16:vc 25:v 27:vca 28:vca 33:va 57:v
+syn195 3 17:vc 61:va 65:vc 66:vc 69:v 71:vc
+syn196 4 2:v 5:vca 46:vp 47:vc 98:vc 101:vca
+syn197 5 2:va 8:v 18:v 24:v 87:v 88:v 90:va 91:va 92:vca 93:v 94:v
+syn198 6 15:va 17:vc 38:vcp 42:v 58:vc 74:vc 82:v 83:v 84:vc 101:vc
+syn199 7 1:va 15:vc 30:vc 39:vc 66:vc 79:v 84:v 112:vca 113:vcp 115:vca 116:vc 118:vcp
+syn200 0 4:vcp 42:vcp 44:v 48:vc 49:va 63:v 118:vcap
+syn201 1 1:v 36:v 39:v 45:vca 74:vca 79:vc 81:va 110:v
+syn202 2 3:vap 16:vap 19:vca 25:v 26:v 27:vcp 28:va 29:vc 32:v 33:v 36:vca 94:va
+syn203 3 6:v 27:vc 31:vcp 41:va 62:v 63:v 71:vc 72:v
+syn204 4 2:vc 5:vc 7:vca 20:va 31:vc 37:vcp 101:vca
+syn205 5 18:vc 48:v 89:vc 92:v 93:va 95:v 116:vc
+syn206 6 1:vcp 38:vcp 42:v 58:vcp 74:vca 84:vcap 90:va
+syn207 7 1:v 15:vca 32:vca 39:vp 100:va 110:vc 111:vc 112:vcap 113:v 114:va 118:v 119:vp
+syn208 0 4:va 14:vc 30:va 38:v 42:vc 49:vc 55:vca 58:vcap 110:vc
+syn209 1 1:v 11:vc 22:vc 41:vc 81:va 93:va 110:vcp 120:v
+syn210 2 3:vp 9:v 25:v 26:vc 29:vc 31:vp 34:vca 35:vc 44:v 62:vc
+syn211 3 5:vca 6:vc 12:vc 17:v 32:vca 61:vc 67:v 71:va 72:vc 111:v
+syn212 4 5:vca 7:vc 37:va 47:vcap 54:vap 62:vc 100:v 102:va
+syn213 5 8:vca 18:vca 52:vc 56:vcp 69:v 85:va 86:vp 87:vca 90:vc 91:vcp 92:vc 120:vca
+syn214 6 1:vc 41:vcp 42:v 48:v 58:vc 64:vca 75:va 84:v 120:vcp
+syn215 7 11:v 15:vcp 27:vca 79:vca 113:vc 114:vc 119:v 120:v
+syn216 0 4:vca 14:vc 19:vca 38:vc 42:vc 49:v 53:vcap 55:v
+syn217 1 11:vc 13:vca 22:vc 29:v 45:vc 46:va 74:vca 78:v 79:vcp 81:vc 109:vca 120:v
+syn218 2 3:v 9:va 25:vca 27:va 29:v 32:vcp 34:vca 35:vc
+syn219 3 6:vc 7:vca 12:vcp 13:vc 17:va 25:vc 61:vc 66:v 69:vp 70:v 77:v 105:vc
+syn220 4 2:vcp 5:vc 7:v 20:vca 78:va 98:v 101:vc 102:vc 104:v 117:vc
+syn221 5 8:v 24:vc 86:vcp 88:v 92:va 94:vca
+syn222 6 3:vca 38:vc 41:vc 58:vc 74:vc 84:v 114:v
+syn223 7 1:v 11:vca 13:vc 15:vc 43:vc 74:vca 79:vc 99:v 113:va 115:vc
+syn224 0 1:v 14:va 17:v 42:v 48:v 53:vc 55:v 58:v 62:va
+syn225 1 1:v 11:v 37:v 45:v 78:vca 90:vc 120:v
+syn226 2 3:v 9:vc 12:v 16:vc 25:vp 27:vp 31:vca 33:va 34:vc 36:vca
+syn227 3 6:va 7:v 61:v 62:vc 64:vcp 67:v 69:vp 71:v 72:vc 99:vca 105:vc
+syn228 4 5:v 20:vc 37:vc 38:v 54:v 79:vp 97:vc 101:v 103:vcp
+syn229 5 8:va 16:vca 24:va 63:v 85:v 87:vcp 88:v 95:vc
+syn230 6 1:vc 38:v 40:v 41:va 48:vc 52:vc 58:v 73:vc 74:vc 75:v 84:vc
+syn231 7 39:v 69:vp 110:vc 116:va 118:vp 119:vca
+syn232 0 17:va 34:vca 38:vc 42:v 52:vc 53:vcp 63:va 108:vc
+syn233 1 1:vc 14:v 22:va 52:vc 74:v 78:vc 79:vcp 81:vc 110:vc 120:v
+syn234 2 9:vp 20:vc 27:v 28:vc 31:vc 33:vp 42:v
+syn235 3 6:vca 7:vap 12:va 56:va 61:vca 66:v 67:vcp 69:v 72:vc 91:vc 99:va 119:v
+syn236 4 2:vca 5:v 22:v 46:v 47:vca 97:v 101:v 102:vcp 105:va
+syn237 5 8:vc 9:vp 23:v 89:vcp 90:v 92:va 96:vp
+syn238 6 1:vcp 18:vc 24:v 31:vc 38:vca 58:vca 60:v 82:vcp 84:vc
+syn239 7 39:vap 63:v 79:vcap 110:v 113:vc 114:v 118:v 119:vc
+syn240 0 6:vc 33:v 38:vp 42:vc 52:va 53:vc 55:vc 58:vc 108:va
+syn241 1 1:v 22:v 39:vca 74:v 78:vc 79:v 81:vc 109:vcp 110:vca 120:vc
+syn242 2 2:vp 3:v 9:va 25:vca 26:vc 27:va 28:vap 31:va 32:vc 36:v 57:vca
+syn243 3 7:vc 64:v 65:va 67:vc 69:vp 72:vc 99:vca
+syn244 4 2:v 5:v 20:v 37:vca 47:v 62:va 78:v 88:v 97:vcap 101:v 102:vc
+syn245 5 8:vc 18:v 24:vc 41:vcp 79:vc 86:vc 88:vp 90:v 92:vc 93:va
+syn246 6 42:va 58:vc 74:vap 75:v 81:va 83:vc 84:v
+syn247 7 1:vcp 11:vc 30:va 39:va 50:vc 79:v 109:vap 114:va 118:va
+syn248 0 4:vca 14:vc 15:vp 18:vc 42:va 49:vc 52:v 55:v 58:v 88:va
+syn249 1 45:vca 74:vca 81:v 109:vp 110:vc 115:vca
+syn250 2 2:vc 27:vc 28:v 29:v 32:vca 34:v 57:vc
+syn251 3 6:v 10:vcp 12:v 61:vc 63:vcp 66:vp 68:vcp 70:va 72:v
+syn252 4 5:vca 10:vcp 20:v 37:v 46:vcp 47:vc 101:v 104:vap 107:vc 120:va
+syn253 5 8:vp 50:va 87:vc 91:va 92:vc 94:v 120:vca
+syn254 6 1:va 19:vc 38:vap 58:vc 74:v 83:v
+syn255 7 1:vca 79:vca 109:vp 110:v 112:vc 114:vca
+syn256 0 4:vc 5:vca 42:vc 49:v 53:vc 55:vc 57:vca 75:vc 95:va 107:vc
+syn257 1 1:v 39:v 45:vca 63:vc 74:vc 76:va 78:vc 80:va 81:v 113:vca 120:va
+syn258 2 3:vc 9:vc 16:vc 26:vap 27:vc 28:v 29:vca 33:va 57:vca 76:v
+syn259 3 6:v 61:vc 62:v 65:vc 69:va 71:va 100:vp
+syn260 4 2:vca 10:vc 46:v 54:vc 58:v 97:vc 98:vca 101:vc 104:vp 112:va
+syn261 5 8:vc 85:vp 86:vc 88:v 92:vc 94:v 95:vca 96:vcp
+syn262 6 1:v 31:vc 41:vc 42:vc 48:v 58:vc 74:va 75:v 82:vc 84:vc
+syn263 7 1:v 11:v 30:vcp 44:vp 79:vca 110:v 112:vc 114:va 118:v
+syn264 0 4:vcp 17:vca 18:vca 19:vca 33:vc 42:v 52:v 53:v 55:va 58:v
+syn265 1 1:v 11:va 22:v 26:vc 39:vc 45:vc 78:vc 79:vcp 81:vca 109:vc 110:vc
+syn266 2 3:vca 27:v 29:v 31:v 32:vp 57:va 115:vc
+syn267 3 6:vca 61:va 64:v 66:vap 68:vc 71:vap 100:vc
+syn268 4 2:va 5:vc 10:va 20:vcp 37:vca 46:vca 47:vc 72:v 101:vca 102:v 104:vca 107:vc
+syn269 5 8:v 18:vc 24:vc 47:vc 85:vc 87:va 88:v 89:v 90:v 92:vcap 95:v 100:va
+syn270 6 1:vc 38:vca 41:v 58:vp 74:v 75:vca 81:v 82:vc 84:vca 101:vc
+syn271 7 1:vca 11:va 15:vca 79:vcp 97:v 110:vc 112:v 113:vca 115:vc
+syn272 0 4:v 14:v 17:v 19:vcp 38:vca 42:vc 48:vc 53:vc 55:vp 58:v 63:v
+syn273 1 1:vc 11:vc 13:v 24:va 46:v 57:va 74:va 79:v 80:v 81:vca 109:vc 120:v
+syn274 2 3:va 9:vc 16:va 27:vc 29:v 34:vc 39:va 61:vc 94:v 104:vca
+syn275 3 6:vc 23:v 61:vc 64:vc 66:va 71:vc 89:v
+syn276 4 2:vc 5:vc 7:vcp 37:va 46:v 59:v 72:v 98:vc 107:vc
+syn277 5 18:va 57:v 85:v 88:vc 89:vp 92:va 93:vc
+syn278 6 1:va 37:vc 38:va 42:va 48:vc 49:vc 58:vc 74:vc 75:v 83:v
+syn279 7 1:v 39:vca 84:vcp 102:vc 112:vc 113:va 114:vp 118:va 119:va
+syn280 0 4:vp 19:v 35:vca 42:vc 55:vc 58:vap 60:v
+syn281 1 1:v 8:vca 13:vc 45:va 79:vca 81:vc 120:va
+syn282 2 16:va 25:vc 26:vc 27:v 28:vc 32:vca 33:v 35:vc 36:vc
+syn283 3 6:vcp 23:vc 61:v 62:v 63:vc 66:va 67:vcap 71:va 72:vc
+syn284 4 2:v 5:vca 37:vca 45:vc 46:vca 96:vp 97:vp 101:vc
+syn285 5 2:vc 56:vc 81:v 86:va 87:v 88:vc 89:vc 91:vc 92:va 93:v 94:vc 96:vc
+syn286 6 1:vc 41:vp 58:vc 75:vc 84:vc 113:vc
+syn287 7 1:vc 11:vc 19:vc 21:vcp 39:va 110:vc 112:v 119:vca
+syn288 0 4:v 11:vca 38:vc 42:vc 48:vp 49:v 53:vcp 55:v 63:v
+syn289 1 1:vc 11:va 45:vc 78:v 79:v 81:v 109:v 117:v 120:v
+syn290 2 3:va 9:v 25:v 27:v 32:v 33:vc 34:vc 35:vc 36:va 57:vc
+syn291 3 7:v 12:vap 23:v 58:vca 61:v 65:vc 66:vca 69:va 70:va 71:vap 105:vap
+syn292 4 2:vc 37:vc 47:vap 81:v 101:vca 102:vp 103:v 107:vap
+syn293 5 2:va 18:vc 24:v 87:vca 88:va 91:vc
+syn294 6 1:v 27:v 38:vp 42:vp 44:v 58:vap 74:vca 75:vcap 83:vca 84:va 107:va
+syn295 7 1:v 11:v 39:vca 79:vc 102:vca 112:v 114:v 115:va 116:vp 118:v 120:v
+syn296 0 4:vc 14:v 19:vc 41:vc 42:vc 48:va 52:vp 53:v 55:v 58:v 59:vc 60:vc
+syn297 1 1:vc 22:v 45:v 74:vc 78:vcp 115:v 120:vc
+syn298 2 3:v 23:vp 27:vc 28:v 29:v 33:vc 34:vp 36:vap 79:v 89:v
+syn299 3 6:vca 61:v 62:vc 66:v 68:v 71:v 72:v 91:vca 98:v 120:vc
+syn300 4 2:vp 7:vc 10:vc 20:vca 37:vcp 101:v 107:va
+syn301 5 8:va 24:vp 33:va 49:va 86:v 87:v 89:vc 91:v 92:vc 93:v
+syn302 6 1:v 38:v 48:va 58:vc 75:vca 82:v 83:v
+syn303 7 21:vc 31:va 39:vc 75:v 110:vc 111:vc 112:vcp 113:vc 118:v
+syn304 0 4:vc 14:va 19:v 42:v 48:vc 49:vc 55:va 66:vca
+syn305 1 1:vp 7:vc 11:vc 22:v 39:vca 45:vp 53:v 62:vca 79:vca 81:v 109:v
+syn306 2 3:v 9:v 13:va 16:vc 27:va 32:vca 34:v 35:vp 36:vap 42:v 94:v
+syn307 3 6:vc 7:va 12:va 13:vca 17:vc 23:v 61:vc 66:v 67:vc 70:vc 72:v 99:v
+syn308 4 2:vc 5:v 7:vp 10:vc 31:vc 37:vc 40:vap 46:vca 102:vc 103:vca
+syn309 5 8:vca 36:v 39:va 87:v 92:va 96:vcp 99:vc 105:vc
+syn310 6 1:v 30:va 33:v 42:v 55:vcp 58:va 74:v 82:vcp 84:vca
+syn311 7 15:v 70:v 79:vp 112:vp 114:vca 118:vca 119:vc
+syn312 0 4:v 14:va 19:vc 41:vc 42:va 48:v 52:vc 55:vp 63:v 78:vc 119:va
+syn313 1 11:v 20:vca 39:vc 45:vcp 74:vca 80:vca 81:v 120:v
+syn314 2 3:v 9:vc 16:vca 26:vp 27:vca 33:vc 57:vca
+syn315 3 21:v 34:va 45:vp 62:v 64:vcap 67:va 71:vc 72:vc 100:vc
+syn316 4 2:v 10:vp 46:vca 47:va 101:vc 102:vc 103:vc
+syn317 5 24:v 53:v 85:vca 87:va 90:vp 92:vc
+syn318 6 1:v 38:va 42:vca 58:va 75:vcp 84:vc
+syn319 7 1:vca 21:va 39:vc 45:vc 79:vc 110:vc 111:vc 112:vc 118:va 119:v 120:va
+syn320 0 4:vc 14:vcp 19:vc 39:v 42:va 44:vc 48:vp 52:vp 55:vc 63:vc
+syn321 1 11:v 18:vc 45:vc 78:vc 81:v 109:v 110:va 120:va
+syn322 2 3:v 9:vc 16:v 26:va 28:v 32:v 33:vcp 34:vca 35:v 64:va 75:vp
+syn323 3 6:vc 7:vc 61:vc 67:vc 69:vp 90:v 99:vca 100:vc 105:vca
+syn324 4 2:v 7:v 22:vcp 37:v 69:vc 97:va 101:v 107:vc
+syn325 5 8:v 18:va 71:vc 76:vc 85:vca 88:vap 89:vp 90:v 92:vca 93:vc 94:vp
+syn326 6 1:vap 41:v 58:va 73:v 74:va 83:vc 84:vc
+syn327 7 1:vc 11:vap 39:vc 72:v 79:vca 92:v 103:v 109:vp 113:va 114:vca 116:v 118:v
+syn328 0 17:v 28:va 42:va 52:vc 55:v 95:vcp
+syn329 1 1:vc 11:va 22:v 39:vca 67:vcp 74:v 78:vca 80:vc 81:vcap 96:vc 110:va 120:v
+syn330 2 3:v 27:va 29:vc 31:v 32:va 33:vc 35:v 119:v
+syn331 3 6:v 12:v 31:vc 61:vc 66:va 72:vp 73:vc 105:vc 113:vca
+syn332 4 2:vca 46:vc 47:va 58:vca 60:va 97:vca 102:vcp
+syn333 5 2:vc 8:v 18:va 24:va 65:va 85:vc 87:vc 89:v 90:vca 92:vca 93:v 95:va
+syn334 6 1:vcp 19:vap 40:vca 48:v 58:vca 84:vca 101:va 110:vcp 115:vc
+syn335 7 1:v 11:vc 16:va 29:vp 43:vp 108:vc 110:vc 112:v 118:vc 119:vca 120:v
+syn336 0 4:v 11:vp 38:vca 53:v 55:v 63:vc 69:va
+syn337 1 1:vc 11:vp 45:vca 74:v 78:v 79:vc 80:va 81:vc 115:va 120:v
+syn338 2 9:vc 16:vc 27:vp 33:v 35:vca 57:vc
+syn339 3 7:vca 23:vc 61:vp 64:v 66:vc 67:vc 68:v 71:vc 82:vc 105:v
+syn340 4 2:va 5:vc 29:vca 37:va 46:vc 71:vcp 97:v 101:v 102:vc 103:vp
+syn341 5 8:vc 30:vp 77:va 87:va 88:vcp 89:v 92:va 93:v 96:va 101:va
+syn342 6 38:vc 48:va 50:va 58:vc 75:v 84:vp
+syn343 7 15:vap 19:vc 39:vc 79:v 89:v 118:vc 119:va
+syn344 0 4:v 48:v 55:v 58:v 64:vc 74:v 112:vc 115:vca
+syn345 1 1:vcp 13:vca 39:v 74:vc 81:vc 120:vcp
+syn346 2 3:va 9:v 26:va 27:vp 31:vca 33:vc 35:vap 53:v 76:v 113:vca
+syn347 3 7:vc 9:v 47:vc 58:vc 64:vc 66:v 70:vc 99:va
+syn348 4 2:vc 5:vcp 7:v 10:vc 20:vca 37:vc 97:vc 101:vcap 102:vcp
+syn349 5 18:vcp 24:vca 85:v 87:v 89:v 92:vc 93:v 94:vca 95:vp 96:vc 99:vc
+syn350 6 1:vp 4:v 42:vp 54:va 58:va 74:v
+syn351 7 1:v 14:v 15:v 70:vc 112:v 113:v 116:vc
+syn352 0 7:vc 17:v 18:vcp 19:va 22:v 42:va 48:v 49:vca 55:vc 58:vc 63:va
+syn353 1 1:vc 24:vca 39:vap 45:vc 74:v 81:va 103:va 120:vap
+syn354 2 3:vc 16:vc 25:vcap 26:v 27:vca 28:v 33:vcp 35:vc 39:v 76:v
+syn355 3 7:vc 8:v 60:vc 61:vca 65:vca 66:v 67:vca 71:v 100:vp 105:va 108:vc
+syn356 4 5:vc 7:vc 37:v 46:vc 47:vp 98:va
+syn357 5 18:va 66:vc 88:vp 89:vc 92:vc 93:vca 94:v 96:vca
+syn358 6 32:va 38:vca 41:vcp 42:v 58:vc 74:vc 76:vc 82:vca 83:vc 84:vca
+syn359 7 1:v 11:vca 12:vc 26:vc 112:va 119:v 120:vc
+syn360 0 4:vca 14:vca 48:va 53:vcp 63:vc 117:v
+syn361 1 1:vca 11:vp 37:va 45:vp 74:vcap 80:vca 81:va 110:vp 117:v 120:v
+syn362 2 16:va 25:vcap 27:vc 33:v 34:vc 98:v
+syn363 3 46:vca 61:vca 70:vca 71:v 115:vc 116:vc
+syn364 4 2:vc 5:vc 10:vc 20:vca 28:vca 37:v 46:vcp 91:v 97:vc 101:v 103:vc 107:v
+syn365 5 8:vc 18:vc 47:v 87:vca 90:vc 92:vcap
+syn366 6 1:vc 38:va 41:vc 58:vc 70:v 74:v 75:vc 84:vcap
+syn367 7 7:vc 18:vcp 30:vca 39:v 79:va 110:vp 112:vca 113:va 116:vca
+syn368 0 4:vca 9:vc 14:v 19:v 27:vcp 42:v 48:v 49:va 55:vcp 58:vc 107:v 114:va
+syn369 1 1:vap 2:v 45:v 81:vca 103:vc 120:va
+syn370 2 3:vap 9:vc 25:vca 27:v 28:vca 33:v 34:v 51:vca 57:vca
+syn371 3 6:vca 7:vcap 60:v 61:v 63:v 65:vp 71:vca 72:vc 100:vc 120:vc
+syn372 4 2:v 5:v 7:vp 13:va 37:v 46:vca 47:vc 85:vc 98:vcp 101:v 103:vca 104:vcap
+syn373 5 8:vc 18:va 84:v 86:va 87:vc 89:vap 92:va 115:vca
+syn374 6 1:v 41:v 58:vca 75:v 83:v 84:v
+syn375 7 1:va 39:v 71:vp 109:va 115:vc 119:vc
+syn376 0 4:vcap 17:va 19:v 42:vcp 48:v 52:v 55:v
+syn377 1 1:vc 22:vp 30:vc 39:vc 45:vc 74:vcp 109:vp 115:vap
+syn378 2 3:v 16:vp 27:v 28:va 31:vc 33:v 34:vc 48:vc 57:va 101:v
+syn379 3 6:va 12:va 14:vc 42:vc 61:vca 62:vc 66:vc 69:vca 72:vcp 90:vc
+syn380 4 2:vap 5:vca 10:v 20:vp 37:vc 47:vcp 97:vc 101:vc 102:v
+syn381 5 8:va 18:vc 25:vc 37:vc 85:vca 86:vca 87:vc 89:vap 92:vp 93:v 95:vc
+syn382 6 1:v 28:vp 38:va 42:vca 48:v 58:vca 74:vc 75:va 82:v 84:v 86:vcap
+syn383 7 1:v 11:vc 15:v 21:vc 30:vca 79:v 109:v 112:v 113:vc 114:v 120:v
+syn384 0 4:va 14:vcp 17:vc 22:v 38:v 42:va 49:v 52:vc 55:vc 58:vca 63:vca 72:v
+syn385 1 13:vca 39:vcp 45:v 78:vcp 81:vca 109:v 110:vca 120:vca
+syn386 2 3:vp 16:vca 27:vc 29:v 32:v 33:va 36:vcp 57:vc 99:vca
+syn387 3 6:vc 7:v 12:vc 47:vc 61:vca 63:vc 69:vc 71:vc 99:va 105:v
+syn388 4 5:v 7:vc 20:va 37:v 46:vc 47:v 76:v 79:vca 97:vc 101:vc
+syn389 5 8:vc 65:vcap 87:vc 88:vc 89:va 90:va 91:vc 92:va 94:v 95:vc 117:v
+syn390 6 1:vap 41:va 42:vca 48:v 58:v 74:v 75:v 82:v 83:va 84:vcp 109:vca
+syn391 7 1:vcp 2:vca 21:vc 39:vc 79:vc 109:vc 112:v 116:vc 120:v
+syn392 0 4:vc 14:va 42:vca 46:vc 53:vc 58:vc 72:v
+syn393 1 1:vp 15:va 34:vc 39:vca 45:v 60:v 74:vc 79:v 81:vc 109:vp 110:vc
+syn394 2 3:vca 27:vca 28:v 29:v 31:v 32:vap 34:v 57:vca 106:vp
+syn395 3 6:vcp 7:vp 8:v 17:vca 23:vc 61:vc 62:va 66:v 67:vc 69:vca 71:vc 105:v
+syn396 4 5:v 7:vca 10:vcp 37:vca 46:v 101:vc 102:vca 104:v 107:va
+syn397 5 8:vc 85:va 87:vc 88:v 90:vc 92:v
+syn398 6 48:vc 58:vap 63:vca 74:v 82:vcp 84:v 107:vc
+syn399 7 1:vc 11:v 15:v 30:vca 37:va 39:vcp 90:vap 94:vc 109:vca 115:vca 118:vc 119:va
+syn400 0 4:vc 19:v 38:vca 42:vc 48:vc 55:vp 58:vca 63:v 92:va
+syn401 1 13:va 45:va 55:vc 74:vap 78:v 79:va 81:v 110:vca 117:v 120:v
+syn402 2 27:vcp 28:vc 29:vp 32:va 33:v 36:vc 91:vca 120:v
+syn403 3 6:v 21:v 23:vca 48:vcp 62:vc 64:va 68:vc 72:v 99:vc
+syn404 4 5:vc 7:vca 10:vc 38:vc 46:v 64:vc 94:v 101:vap 103:vca
+syn405 5 8:v 18:va 24:v 87:vp 88:va 89:v 90:vc 92:vca 93:vc 94:v 95:v 100:v
+syn406 6 1:v 38:va 48:vp 58:vca 70:vc 74:vc 75:va 82:vca 84:vc 115:v
+syn407 7 1:va 21:va 27:va 39:v 112:vca 117:v 118:vc
+syn408 0 4:v 14:vc 17:vca 22:vap 42:vc 48:v 49:vca 55:vc 58:vc 63:va 108:vc
+syn409 1 1:vc 11:v 13:vc 34:vc 42:va 45:vc 79:vca 81:v 107:vc 109:v 115:vcp 120:va
+syn410 2 9:vc 26:vcp 28:vc 29:vcp 33:vcap 34:vca 87:vca 91:v
+syn411 3 6:v 7:va 12:vap 17:va 61:va 62:vp 64:v 66:va 68:vc 71:vc 75:vc 105:vc
+syn412 4 2:v 5:v 7:vc 37:vc 46:vc 58:vap 75:vcap 101:v 102:v 107:vc
+syn413 5 8:va 18:va 86:vc 87:v 88:vc 89:va 91:vc 94:v
+syn414 6 1:vap 38:vc 41:vc 42:v 48:vca 56:vc 58:va 74:vp 75:vc 82:vp 84:vc 117:v
+syn415 7 1:va 11:v 15:va 22:vcap 26:va 39:v 90:vca 112:vc 116:vca 118:v 119:v
+syn416 0 4:vc 8:vca 14:v 19:vap 42:v 48:vp 52:vp 55:va 58:vca 63:v 115:v
+syn417 1 1:v 13:vc 45:vc 79:v 80:v 96:vp 120:vc
+syn418 2 3:vca 27:vc 33:v 35:v 84:v 96:v
+syn419 3 7:v 63:vca 66:v 71:vc 98:vc 104:va
+syn420 4 2:v 5:vca 10:vc 20:vc 37:v 70:vc 84:vcap 102:va 103:vca 104:vc
+syn421 5 8:vc 43:v 59:vca 73:vc 87:v 88:vc 89:v 90:v 91:v 92:v 96:vp
+syn422 6 1:vc 24:vcp 28:vca 38:va 41:v 42:v 48:v 58:vap 75:vc 82:vc 84:vc 97:v
+syn423 7 1:va 21:vc 39:vc 95:va 110:v 112:vca 113:vca 117:vc 119:vc 120:vc
+syn424 0 4:v 6:va 14:vca 38:vca 48:vcp 52:vc 53:vca 55:vc 58:vcp 63:vcp 81:vcp 118:vc
+syn425 1 1:vc 11:v 39:vc 45:vcp 55:v 65:vca 78:vc 109:v 115:v 120:vp
+syn426 2 3:vca 9:vca 27:v 28:vc 29:v 31:v 33:v 35:vc 37:vc 57:va
+syn427 3 7:vc 14:vcp 52:va 61:vc 63:vc 66:v 67:vc 72:v
+syn428 4 5:vc 7:vcap 20:vc 37:vc 47:vap 59:v 66:va 101:vc 102:v 103:vc
+syn429 5 2:vc 8:vca 18:vc 24:v 86:v 87:vcap 90:vc 92:v 95:v 96:va 97:vca
+syn430 6 1:va 21:vc 42:v 48:vc 58:vp 71:vcap 74:va 82:v 83:vca 84:v
+syn431 7 1:vc 11:vc 39:vca 42:v 69:vc 79:vcp 109:v 112:v 113:vc 116:vc 118:v 119:v
+syn432 0 4:vca 19:vc 42:vap 49:v 58:vc 63:vp
+syn433 1 6:vc 13:va 39:vc 45:vc 54:vp 81:v 87:v 103:vc 109:vca
+syn434 2 3:vc 9:v 14:vca 25:va 26:vca 27:vca 28:vc 31:vc 33:v 35:v 36:vc
+syn435 3 6:vca 7:vc 53:v 61:vc 62:v 65:vcp 67:vc 68:vc 71:v 72:vca 79:v 100:v
+syn436 4 2:vc 7:vc 20:vc 37:vcp 47:v 101:v 102:va 112:vca
+syn437 5 8:v 24:v 87:vc 91:vc 92:vcap 93:va 94:va 95:va
+syn438 6 1:vcp 22:vca 38:vcap 42:vp 58:vc 74:vp 75:vcp 82:vc 84:vca
+syn439 7 1:vp 39:vc 69:vc 79:vca 112:vcp 113:v 114:va 118:vc 119:vc
+syn440 0 4:vc 14:vca 17:v 19:vc 42:v 49:va 58:vap 77:v 115:v
+syn441 1 11:va 22:vp 45:v 81:v 87:vc 90:va 109:va 115:vc 120:vc
+syn442 2 3:va 28:v 29:v 33:vp 54:va 70:v
+syn443 3 6:vca 7:vc 26:vcap 66:va 67:vc 68:vp 72:v
+syn444 4 2:vca 5:vcap 7:vc 17:v 20:v 37:v 46:vcap 47:vc 98:vc 101:v 102:vcap 104:vc
+syn445 5 8:v 18:v 64:vca 86:v 87:vc 88:vca 93:vc
+syn446 6 1:va 38:v 39:vc 41:va 47:vp 48:vca 58:vap 67:vp 74:vc 75:vca 82:vca 84:v
+syn447 7 1:vc 11:vca 39:vc 79:vc 80:v 109:vca 111:va 112:va 114:va 118:v 119:vp 120:v
+syn448 0 4:vp 19:v 38:v 42:vcap 48:vc 49:vc 52:vc 55:va 63:vca 93:va
+syn449 1 1:va 11:vca 13:v 72:vc 81:v 87:vca 120:vc
+syn450 2 3:vc 9:vcap 28:vcap 31:v 33:vc 34:v 35:vcap 85:v
+syn451 3 31:vca 46:vc 61:vp 62:v 65:vca 66:v 71:vc 72:vc 74:vca 113:vap
+syn452 4 2:vc 5:va 37:v 39:va 47:vc 101:vc 103:v 104:vc 114:vc
+syn453 5 8:vca 85:va 86:vc 89:va 92:va 93:v
+syn454 6 29:v 43:vc 58:vca 74:vc 75:vc 78:v 82:v 84:vcap
+syn455 7 1:vap 13:vc 20:v 42:vc 82:v 97:vc 110:vc 112:vc 116:vc 118:vc
+syn456 0 4:vca 14:vcp 17:v 38:vap 42:vc 48:vca 53:v 55:v 63:vca
+syn457 1 1:va 42:v 45:v 74:va 81:v 109:vcp 112:vc
+syn458 2 3:v 25:vcp 31:v 33:vc 34:v 36:v 87:vp 111:v
+syn459 3 6:vc 17:vp 65:vap 66:vc 69:va 71:va 72:vc 100:vap
+syn460 4 10:vc 36:vp 37:v 47:v 63:va 101:vca
+syn461 5 8:va 18:va 24:vc 74:vp 81:vca 85:vap 87:vp 91:vp 92:vca 94:vc 95:vc 110:vc
+syn462 6 1:v 38:vc 41:vc 48:vcp 58:v 74:vc 75:vc 76:v 83:va 84:vp
+syn463 7 11:vca 15:vca 21:v 43:vp 108:vc 112:v
+syn464 0 4:vp 6:vc 14:vc 17:v 19:vc 34:vcap 38:va 42:vca 48:vca 52:vp 53:vp 58:va
+syn465 1 1:vc 9:vca 11:vp 45:vc 69:v 74:v 81:v 109:vca 110:vc
+syn466 2 3:vp 9:v 27:v 29:vca 33:v 36:vc 57:v
+syn467 3 7:vc 12:v 33:vc 61:v 63:vca 66:v 67:vc 70:vc 71:v 84:vc 98:va 99:vc
+syn468 4 2:vc 6:v 10:vca 24:va 46:va 47:vcp
+syn469 5 8:vc 18:vca 70:vc 85:v 86:vp 88:v 89:vc 91:vc 93:vc
+syn470 6 1:vcap 9:vca 25:v 28:vca 41:va 58:v 74:v 75:vc 83:vca
+syn471 7 10:vca 39:vcp 63:v 112:va 114:va 119:v
+syn472 0 4:vc 14:vap 22:vap 42:vc 52:v 57:vc 63:vcp 101:vc
+syn473 1 1:vc 13:vc 39:vca 45:vp 74:va 78:vc 79:vc 81:va 100:v 110:vca 117:va 120:vca
+syn474 2 3:vc 9:v 16:va 27:v 28:v 29:va 31:vc 57:vcap
+syn475 3 6:vc 16:va 61:vc 62:va 66:vc 71:vc 99:va
+syn476 4 7:v 35:vc 37:v 47:vc 67:vc 103:v
+syn477 5 85:va 89:vp 90:va 91:vcap 92:va 102:vca
+syn478 6 1:vc 38:vca 42:v 46:vc 48:vcp 58:vp 74:va 75:vc 80:vp 84:v
+syn479 7 11:vap 30:v 31:vc 39:vc 112:vcp 113:v 114:v 116:v 118:vp
