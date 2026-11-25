@@ -139,3 +139,16 @@ Blend weights picked on validation data (mean over splits):
 - No online (click-through) test has been run. Product text is short, so the content model is coarse.
 
 Tests: `tests/test_recommender.py` (tokenizer, TF-IDF, each model on tiny hand-made cases, an evaluation check that the hybrid beats popularity) and an API test for `/similar`.
+
+## Database (persistent PostgreSQL, SQLite fallback)
+
+The app picks its database from one environment variable:
+
+- `DATABASE_URL` set (a `postgresql://...` URL): PostgreSQL. The live demo uses a free Neon Postgres project (no card needed), so accounts, favourites, RFQs and recommender events survive restarts and redeploys.
+- not set: a local `sindbad.db` SQLite file, as before. Nothing to install or configure.
+
+`dbcompat.py` is a small adapter so one set of SQL runs on both. The tests run on both (`DATABASE_URL=... pytest`, each test in its own schema).
+
+Schema: `users`, `roles`, `user_roles` (admin is a role), `suppliers`, `products`, `interactions` (real events), `event_types` (event weights), `synthetic_interactions` (labelled synthetic buyers, `is_synthetic = 1`, seeded from `data/synthetic_interactions.txt`), `favorites`, `orders`/RFQs, and `resources` (a registry of the tables and datasets, with a synthetic flag). `GET /api/resources` lists them with row counts and the active backend.
+
+There are no default admin credentials. To make an existing account an admin: `python scripts/make_admin.py you@example.com`.
