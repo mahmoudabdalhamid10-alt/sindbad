@@ -244,85 +244,34 @@ def track_event(x:EventIn,u=Depends(require_user)):
  c.execute('INSERT INTO interactions(user_id,product_id,event_type,created_at) VALUES(?,?,?,?)',(u['id'],x.product_id,x.event_type,datetime.utcnow().isoformat()));c.commit();c.close();return {'ok':True}
 @app.get('/api/recommendations')
 def recommendations(request:Request,limit:int=12):
-    """Hybrid recommendations: content affinity + user-user CF + popularity cold-start."""
-    import math
-    u=current_user(request); c=db()
-    allp=[dict(r) for r in c.execute('''SELECT p.*,u.company supplier_company,u.country supplier_country FROM products p JOIN users u ON u.id=p.supplier_id WHERE p.active=1 AND p.stock>0''').fetchall()]
-    if not allp:
-        c.close(); return {'items':[],'strategy':'empty_catalog','model':'hybrid-v2'}
-    by_id={p['id']:p for p in allp}; weights={'view':1.0,'click':1.7,'cart':3.5,'favorite':4.0,'purchase':5.0}
-    scores={p['id']:0.0 for p in allp}; reasons={}; strategies=[]
-    # Popularity prior, also used for anonymous/new buyers (cold start).
-    pop_rows=c.execute("SELECT product_id, SUM(CASE event_type WHEN 'purchase' THEN 5 WHEN 'cart' THEN 3.5 WHEN 'favorite' THEN 4 ELSE 1 END) score FROM interactions GROUP BY product_id").fetchall()
-    fav_rows=c.execute('SELECT product_id,COUNT(*) n FROM favorites GROUP BY product_id').fetchall()
-    for r in pop_rows:
-        if r['product_id'] in scores: scores[r['product_id']]+=float(r['score'])*0.25
-    for r in fav_rows:
-        if r['product_id'] in scores: scores[r['product_id']]+=float(r['n'])*0.5
-    # A mild catalog prior avoids identical ties in a brand-new marketplace without inventing user events.
-    for p in allp: scores[p['id']]+=0.05*(1.0/(1.0+max(0,p['price'])))
+    """Personalised row. Signed-in buyers with history are scored by the hybrid ML model from their own events and
+    favourites. Anonymous visitors and buyers without history get the popularity fallback (category-diversified)."""
+    from recommender import EVENT_WEIGHTS
+    u=current_user(request);limit=min(max(limit,1),30);m=ml_model();c=db()
+    stock={r['id']:r for r in c.execute('SELECT p.*,u.company supplier_company,u.country supplier_country FROM products p JOIN users u ON u.id=p.supplier_id WHERE p.active=1 AND p.stock>0').fetchall()}
+    history={}
     if u:
-        own_rows=c.execute('SELECT product_id,event_type,COUNT(*) n FROM interactions WHERE user_id=? GROUP BY product_id,event_type',(u['id'],)).fetchall()
-        own_vec={}; category_affinity={}; tag_affinity={}; own_seen=set()
-        for r in own_rows:
-            pid=r['product_id']; w=weights.get(r['event_type'],1.0)*r['n']; own_vec[pid]=own_vec.get(pid,0)+w; own_seen.add(pid)
-            product=by_id.get(pid)
-            if product:
-                category_affinity[product['category']]=category_affinity.get(product['category'],0)+w
-                for tag in (product.get('tags') or '').lower().split(','):
-                    tag=tag.strip()
-                    if tag: tag_affinity[tag]=tag_affinity.get(tag,0)+w*0.25
-        favs=c.execute('SELECT product_id FROM favorites WHERE user_id=?',(u['id'],)).fetchall()
-        for f in favs:
-            pid=f['product_id']; own_seen.add(pid); own_vec[pid]=own_vec.get(pid,0)+4.0
-            product=by_id.get(pid)
-            if product: category_affinity[product['category']]=category_affinity.get(product['category'],0)+4.0
-        if own_seen: strategies.append('content_based')
-        # Content similarity: category + shared tags + product attributes.
-        for p in allp:
-            if p['id'] in own_seen: continue
-            cat_score=category_affinity.get(p['category'],0)
-            tags=(p.get('tags') or '').lower().split(',')
-            tag_score=sum(tag_affinity.get(t.strip(),0) for t in tags if t.strip())
-            if cat_score or tag_score:
-                scores[p['id']]+=cat_score*0.85+tag_score*0.7
-                reasons[p['id']]='Based on categories and product tags you explored'
-        # Correct user-user collaborative filtering using weighted cosine similarity.
-        other_rows=c.execute('SELECT user_id,product_id,event_type,COUNT(*) n FROM interactions WHERE user_id<>? GROUP BY user_id,product_id,event_type',(u['id'],)).fetchall()
-        user_vectors={}
-        for r in other_rows:
-            pid=r['product_id']
-            if pid not in by_id: continue
-            vec=user_vectors.setdefault(r['user_id'],{})
-            vec[pid]=vec.get(pid,0)+weights.get(r['event_type'],1.0)*r['n']
-        similarities=[]
-        own_norm=math.sqrt(sum(v*v for v in own_vec.values())) if own_vec else 0.0
-        if own_vec and own_norm:
-            for other_id,vec in user_vectors.items():
-                dot=sum(v*vec.get(pid,0) for pid,v in own_vec.items())
-                other_norm=math.sqrt(sum(v*v for v in vec.values()))
-                sim=dot/(own_norm*other_norm) if other_norm else 0.0
-                if sim>0: similarities.append((sim,vec))
-        for sim,vec in sorted(similarities,key=lambda x:x[0],reverse=True)[:40]:
-            for pid,engagement in vec.items():
-                if pid not in own_seen and pid in scores:
-                    scores[pid]+=sim*engagement*1.15
-                    reasons[pid]='Popular with buyers who have similar sourcing activity'
-        if similarities: strategies.append('collaborative_filtering')
-    if not strategies: strategies=['popularity_cold_start']
-    ranked=sorted(allp,key=lambda p:(scores[p['id']],p['id']),reverse=True)
-    # Diversify the first page by supplier/category where possible.
-    chosen=[]; supplier_counts={}; category_counts={}
-    for p in ranked:
-        if len(chosen)>=min(max(limit,1),30): break
-        if supplier_counts.get(p['supplier_id'],0)>=5 or category_counts.get(p['category'],0)>=5: continue
-        chosen.append(p); supplier_counts[p['supplier_id']]=supplier_counts.get(p['supplier_id'],0)+1; category_counts[p['category']]=category_counts.get(p['category'],0)+1
-    for p in chosen:
-        p['recommendation_score']=round(scores[p['id']],4)
-        p['recommendation_reason']=reasons.get(p['id'],'Popular wholesale choice for new buyers')
-        p['recommendation_model']='+'.join(strategies)
+        for r in c.execute('SELECT product_id,event_type,COUNT(*) n FROM interactions WHERE user_id=? GROUP BY product_id,event_type',(u['id'],)).fetchall():
+            history[r['product_id']]=history.get(r['product_id'],0)+EVENT_WEIGHTS.get(r['event_type'],1.0)*min(r['n'],3)
+        for r in c.execute('SELECT product_id FROM favorites WHERE user_id=?',(u['id'],)).fetchall():
+            history[r['product_id']]=history.get(r['product_id'],0)+EVENT_WEIGHTS['favorite']
     c.close()
-    return {'items':chosen,'strategy':strategies,'model':'hybrid-v2','personalized':bool(u and (own_vec if u else False))}
+    personalized=bool(history)
+    ranked=m.recommend(history,len(m.ids))
+    items=[];per_cat={}
+    for pid,score in ranked:
+        p=stock.get(pid)
+        if not p:continue
+        if per_cat.get(p['category'],0)>=(4 if personalized else 2):continue
+        d=dict(p);d['recommendation_score']=round(score,4)
+        if personalized:
+            src=m.explain(history,pid);d['recommendation_reason']='Because you showed interest in '+m.products[src]['title'] if src else 'Matches your activity'
+        else:
+            d['recommendation_reason']='Popular with buyers (demo interaction data)'
+        d['recommendation_model']='hybrid-ml' if personalized else 'popularity'
+        per_cat[p['category']]=per_cat.get(p['category'],0)+1;items.append(d)
+        if len(items)>=limit:break
+    return {'items':items,'strategy':['hybrid_ml'] if personalized else ['popularity_cold_start'],'model':'hybrid-ml-v1' if personalized else 'popularity','personalized':personalized}
 
 @app.get('/api/favorites')
 def get_favorites(u=Depends(require_user)):
