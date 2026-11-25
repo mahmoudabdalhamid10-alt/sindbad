@@ -131,3 +131,18 @@ class Recommender:
             score = (vec @ self.blend(weights)) / vec.sum()
         score[vec > 0] = -np.inf
         return [(self.ids[j], float(score[j])) for j in np.argsort(-score)[:k] if np.isfinite(score[j])]
+
+
+def load_synthetic(path):
+    """Read data/synthetic_interactions.txt into (user, product_id, event_type) triples."""
+    names = {'v': 'view', 'c': 'click', 'a': 'cart', 'p': 'purchase'}
+    out = []
+    with open(path) as f:
+        for line in f:
+            if line.startswith('#') or not line.strip():
+                continue
+            parts = line.split()
+            for tok in parts[2:]:
+                pid, ev = tok.split(':')
+                out += [(parts[0], int(pid), names[ch]) for ch in ev]
+    return out
