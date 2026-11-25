@@ -89,6 +89,8 @@ Product photos in `photos/*.txt` are AI-generated studio-style images (one per p
 
 ## Recommendation system ("You may also like")
 
+Two places use the model. (1) **"Recommended for you"** on the home page: a signed-in buyer with activity gets a personal ranking. Their own events (view, cart, favourite, purchase) are weighted, each candidate product is scored by its blended similarity to the products they touched, items they already touched are removed, and the reason names the product that contributed most. Anonymous visitors and buyers with no history get a popularity fallback, limited to 2 per category, labelled as demo interaction data. The row is recomputed on every request, and the model refits when the number of real interactions changes. (2) **"You may also like"** in the product popup is item-to-item: the same list for everyone viewing that product.
+
 Open any product to see six recommended products with the reason for each. The model lives in `recommender.py` (numpy only). Endpoints: `GET /api/products/{id}/similar` and `GET /api/ml/info`.
 
 **How it works.** Three models are fitted at startup and blended:
