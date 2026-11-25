@@ -306,6 +306,69 @@ init();
 </script>"""
 @app.get('/admin/db',response_class=HTMLResponse)
 def admin_db_page():return ADMIN_PAGE
+
+class AdminProduct(BaseModel):
+    supplier_id:int; title:str=Field(min_length=3,max_length=160); category:str=Field(min_length=2,max_length=80); description:str=''; price:float=Field(gt=0); currency:str='USD'; moq:int=Field(default=1,ge=1); stock:int=Field(default=0,ge=0); image:str=''; origin:str=''; lead_time:str='7-15 days'; tags:str=''; active:int=1
+class AdminRole(BaseModel): admin:bool
+ADMIN_LISTS={
+ 'users':("SELECT u.id,u.name,u.email,u.role,u.company,u.country,u.created_at,(SELECT COUNT(*) FROM user_roles r WHERE r.user_id=u.id AND r.role='admin') AS is_admin FROM users u",['u.name','u.email','u.company','u.country'],'u.id'),
+ 'products':("SELECT p.id,p.title,p.category,p.price,p.currency,p.moq,p.stock,p.origin,p.active,p.supplier_id,u.company AS supplier FROM products p JOIN users u ON u.id=p.supplier_id",['p.title','p.category','p.origin','u.company'],'p.id'),
+ 'suppliers':("SELECT s.user_id,s.company,s.country,s.verified,u.email,(SELECT COUNT(*) FROM products p WHERE p.supplier_id=s.user_id) AS products FROM suppliers s JOIN users u ON u.id=s.user_id",['s.company','s.country','u.email'],'s.user_id'),
+ 'orders':("SELECT o.id,o.buyer_id,u.email AS buyer,o.total,o.currency,o.status,o.created_at FROM orders o JOIN users u ON u.id=o.buyer_id",['u.email','o.status'],'o.id DESC'),
+ 'events':("SELECT i.id,i.user_id,u.email AS user_email,i.product_id,p.title AS product,i.event_type,i.created_at FROM interactions i JOIN users u ON u.id=i.user_id JOIN products p ON p.id=i.product_id",['u.email','p.title','i.event_type'],'i.id DESC'),
+ 'resources':("SELECT id,name,kind,description,source,is_synthetic,used_by FROM resources",['name','kind','description'],'id'),
+}
+@app.get('/api/admin/stats')
+def admin_stats(a=Depends(require_admin)):
+    c=db();n=lambda q:c.execute(q).fetchone()['n']
+    d={'users':n('SELECT COUNT(*) n FROM users'),'buyers':n("SELECT COUNT(*) n FROM users WHERE role='buyer'"),'suppliers':n("SELECT COUNT(*) n FROM users WHERE role='supplier'"),'admins':n("SELECT COUNT(*) n FROM user_roles WHERE role='admin'"),
+       'products':n('SELECT COUNT(*) n FROM products WHERE active=1'),'inactive_products':n('SELECT COUNT(*) n FROM products WHERE active=0'),'orders':n('SELECT COUNT(*) n FROM orders'),
+       'events':n('SELECT COUNT(*) n FROM interactions'),'synthetic_events':n('SELECT COUNT(*) n FROM synthetic_interactions'),
+       'events_by_type':[dict(r) for r in c.execute('SELECT event_type,COUNT(*) n FROM interactions GROUP BY event_type ORDER BY n DESC').fetchall()],
+       'products_by_category':[dict(r) for r in c.execute('SELECT category,COUNT(*) n FROM products WHERE active=1 GROUP BY category ORDER BY n DESC').fetchall()],
+       'backend':'postgresql' if dbcompat.USE_PG else 'sqlite'};c.close();return d
+@app.get('/api/admin/list/{kind}')
+def admin_list(kind:str,q:str='',limit:int=15,offset:int=0,a=Depends(require_admin)):
+    if kind not in ADMIN_LISTS:raise HTTPException(404,'Unknown list')
+    base,cols,order=ADMIN_LISTS[kind];limit=max(1,min(limit,100));offset=max(0,offset);args=[];where=''
+    if q.strip():where=' WHERE ('+' OR '.join('LOWER(CAST(%s AS TEXT)) LIKE ?'%col for col in cols)+')';args=['%'+q.strip().lower()+'%']*len(cols)
+    c=db();total=c.execute('SELECT COUNT(*) n FROM ('+base+where+') t',args).fetchone()['n']
+    rows=[dict(r) for r in c.execute(base+where+' ORDER BY '+order+' LIMIT %d OFFSET %d'%(limit,offset),args).fetchall()];c.close()
+    return {'kind':kind,'total':total,'limit':limit,'offset':offset,'rows':rows}
+@app.post('/api/admin/users/{uid}/admin')
+def admin_set_admin(uid:int,x:AdminRole,a=Depends(require_admin)):
+    if uid==a['id'] and not x.admin:raise HTTPException(400,'You cannot remove your own admin role')
+    c=db()
+    if not c.execute('SELECT 1 FROM users WHERE id=?',(uid,)).fetchone():c.close();raise HTTPException(404,'User not found')
+    if x.admin:
+        if not c.execute("SELECT 1 FROM user_roles WHERE user_id=? AND role='admin'",(uid,)).fetchone():c.execute("INSERT INTO user_roles(user_id,role,granted_at) VALUES(?,?,?)",(uid,'admin',datetime.utcnow().isoformat()))
+    else:c.execute("DELETE FROM user_roles WHERE user_id=? AND role='admin'",(uid,))
+    c.commit();c.close();return {'ok':True,'admin':x.admin}
+def _admin_product_vals(x):
+    c=db();ok=c.execute("SELECT 1 FROM users WHERE id=? AND role='supplier'",(x.supplier_id,)).fetchone();c.close()
+    if not ok:raise HTTPException(400,'supplier_id must be a supplier account')
+    return (x.supplier_id,x.title.strip(),x.category.strip(),x.description,x.price,x.currency,x.moq,x.stock,x.image,x.origin,x.lead_time,x.tags,1 if x.active else 0)
+@app.get('/api/admin/products/{pid}')
+def admin_get_product(pid:int,a=Depends(require_admin)):
+    c=db();r=c.execute('SELECT * FROM products WHERE id=?',(pid,)).fetchone();c.close()
+    if not r:raise HTTPException(404,'Product not found')
+    return dict(r)
+@app.post('/api/admin/products')
+def admin_add_product(x:AdminProduct,a=Depends(require_admin)):
+    v=_admin_product_vals(x);c=db()
+    cur=c.execute('INSERT INTO products(supplier_id,title,category,description,price,currency,moq,stock,image,origin,lead_time,tags,active,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',v+(datetime.utcnow().isoformat(),))
+    c.commit();pid=cur.lastrowid;c.close();_ML['key']=None;return {'ok':True,'id':pid}
+@app.put('/api/admin/products/{pid}')
+def admin_update_product(pid:int,x:AdminProduct,a=Depends(require_admin)):
+    v=_admin_product_vals(x);c=db()
+    if not c.execute('SELECT 1 FROM products WHERE id=?',(pid,)).fetchone():c.close();raise HTTPException(404,'Product not found')
+    c.execute('UPDATE products SET supplier_id=?,title=?,category=?,description=?,price=?,currency=?,moq=?,stock=?,image=?,origin=?,lead_time=?,tags=?,active=? WHERE id=?',v+(pid,));c.commit();c.close();_ML['key']=None;return {'ok':True}
+@app.delete('/api/admin/products/{pid}')
+def admin_delete_product(pid:int,a=Depends(require_admin)):
+    """Soft delete: hides the product from the site but keeps orders and events that reference it."""
+    c=db();c.execute('UPDATE products SET active=0 WHERE id=?',(pid,));c.commit();c.close();return {'ok':True,'deactivated':True}
+@app.get('/admin',response_class=HTMLResponse)
+def admin_page():return open(os.path.join(BASE,'static','admin.html'),encoding='utf-8').read()
 @app.get('/api/resources')
 def resources():
  c=db();rows=[dict(r) for r in c.execute('SELECT name,kind,description,source,is_synthetic,used_by FROM resources ORDER BY id').fetchall()]
