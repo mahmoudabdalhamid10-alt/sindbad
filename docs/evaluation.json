@@ -1,0 +1,129 @@
+{
+ "items": 120,
+ "synthetic_users": 480,
+ "interactions": 8405,
+ "k": 10,
+ "seeds": 5,
+ "scenarios": {
+  "full_data": {
+   "train_rows_avg": 7447,
+   "mean_blend_weights": {
+    "content": 0.0,
+    "item_knn": 1.0,
+    "svd": 0.0
+   },
+   "results": {
+    "random": {
+     "hit_rate@10": 0.087,
+     "hit_std": 0.013,
+     "ndcg@10": 0.044
+    },
+    "popularity": {
+     "hit_rate@10": 0.205,
+     "hit_std": 0.032,
+     "ndcg@10": 0.121
+    },
+    "content": {
+     "hit_rate@10": 0.454,
+     "hit_std": 0.026,
+     "ndcg@10": 0.208
+    },
+    "item_knn": {
+     "hit_rate@10": 0.758,
+     "hit_std": 0.012,
+     "ndcg@10": 0.458
+    },
+    "svd": {
+     "hit_rate@10": 0.636,
+     "hit_std": 0.021,
+     "ndcg@10": 0.331
+    },
+    "hybrid": {
+     "hit_rate@10": 0.758,
+     "hit_std": 0.012,
+     "ndcg@10": 0.458
+    }
+   }
+  },
+  "sparse_25pct": {
+   "train_rows_avg": 1880,
+   "mean_blend_weights": {
+    "content": 0.15,
+    "item_knn": 0.85,
+    "svd": 0.0
+   },
+   "results": {
+    "random": {
+     "hit_rate@10": 0.065,
+     "hit_std": 0.009,
+     "ndcg@10": 0.03
+    },
+    "popularity": {
+     "hit_rate@10": 0.174,
+     "hit_std": 0.031,
+     "ndcg@10": 0.097
+    },
+    "content": {
+     "hit_rate@10": 0.314,
+     "hit_std": 0.016,
+     "ndcg@10": 0.147
+    },
+    "item_knn": {
+     "hit_rate@10": 0.486,
+     "hit_std": 0.029,
+     "ndcg@10": 0.24
+    },
+    "svd": {
+     "hit_rate@10": 0.433,
+     "hit_std": 0.031,
+     "ndcg@10": 0.206
+    },
+    "hybrid": {
+     "hit_rate@10": 0.496,
+     "hit_std": 0.032,
+     "ndcg@10": 0.241
+    }
+   }
+  },
+  "very_sparse_10pct": {
+   "train_rows_avg": 840,
+   "mean_blend_weights": {
+    "content": 0.25,
+    "item_knn": 0.6,
+    "svd": 0.15
+   },
+   "results": {
+    "random": {
+     "hit_rate@10": 0.077,
+     "hit_std": 0.017,
+     "ndcg@10": 0.035
+    },
+    "popularity": {
+     "hit_rate@10": 0.166,
+     "hit_std": 0.019,
+     "ndcg@10": 0.09
+    },
+    "content": {
+     "hit_rate@10": 0.272,
+     "hit_std": 0.019,
+     "ndcg@10": 0.128
+    },
+    "item_knn": {
+     "hit_rate@10": 0.302,
+     "hit_std": 0.018,
+     "ndcg@10": 0.148
+    },
+    "svd": {
+     "hit_rate@10": 0.28,
+     "hit_std": 0.018,
+     "ndcg@10": 0.141
+    },
+    "hybrid": {
+     "hit_rate@10": 0.336,
+     "hit_std": 0.021,
+     "ndcg@10": 0.162
+    }
+   }
+  }
+ }
+}
