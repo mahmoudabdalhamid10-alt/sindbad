@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Apparel">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a21caf"/><stop offset="1" stop-color="#1e1b4b"/></linearGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<circle cx="520" cy="60" r="110" fill="#fff" fill-opacity=".06"/><circle cx="70" cy="360" r="140" fill="#fff" fill-opacity=".05"/>
+<path d="M230 110l-90 50 35 55 35-20v125h240V195l35 20 35-55-90-50c-10 25-35 40-70 40s-60-15-70-40z" transform="translate(-30 -20) scale(.95)" fill="none" stroke="#e2f8ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
