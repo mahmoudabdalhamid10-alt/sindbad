@@ -213,3 +213,12 @@ def test_admin_dashboard_api(client):
     assert client.post('/api/admin/users/%d/admin' % sup, json={'admin': True}).status_code == 200
     assert client.get('/api/admin/list/users').json()['total'] >= 4
     assert client.get('/admin').status_code == 200
+
+
+def test_me_reports_admin_flag(client):
+    client.post('/api/register', json={'name': 'Bo Admin', 'email': 'bo@example.com', 'password': 'longpass123', 'role': 'buyer', 'company': 'Bo Co', 'country': 'Egypt'})
+    assert client.get('/api/me').json()['user']['is_admin'] is False
+    c = main.db()
+    uid = c.execute("SELECT id FROM users WHERE email='bo@example.com'").fetchone()['id']
+    c.execute("INSERT INTO user_roles(user_id,role,granted_at) VALUES(?,?,?)", (uid, 'admin', 'now')); c.commit(); c.close()
+    assert client.get('/api/me').json()['user']['is_admin'] is True
