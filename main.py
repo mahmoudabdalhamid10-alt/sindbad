@@ -9,6 +9,7 @@ BASE=os.path.dirname(os.path.abspath(__file__))
 DB=os.path.join(BASE,'sindbad.db')
 SECRET=os.environ.get('SINDBAD_SECRET','local-dev-change-before-deployment').encode()
 app=FastAPI(title='Sindbad | AI-powered Global B2B Marketplace',version='2.0.0')
+CATEGORY_ART={'Electronics':'electronics','Apparel & Textiles':'apparel','Home & Kitchen':'home-kitchen','Food & Agriculture':'food','Safety & PPE':'safety','Sports & Outdoors':'sports','Packaging':'packaging','Industrial Equipment':'industrial'}
 app.mount('/static',StaticFiles(directory=os.path.join(BASE,'static')),name='static')
 
 def db():
@@ -124,6 +125,9 @@ def init_db():
    desc=f'{title} supplied for distributors, importers and commercial procurement. Bulk order options, export packing and supplier quotation available.'
    image=f'https://images.unsplash.com/{photo}?auto=format&fit=crop&w=900&q=80'
    q.execute('INSERT INTO products(supplier_id,title,category,description,price,currency,moq,stock,image,origin,created_at,lead_time,tags) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',(supplier_id,title,cat,desc,prices[i],'USD',moq,stock,image,origin,datetime.utcnow().isoformat(),lead,tags))
+ # Seed photos were hot-linked stock images that did not match the products. Use local category art instead.
+ for cat,slug in CATEGORY_ART.items():
+  q.execute("UPDATE products SET image=? WHERE category=? AND image LIKE 'https://images.unsplash.com/%'",('/static/art/'+slug+'.svg',cat))
  c.commit(); c.close()
 init_db()
 
