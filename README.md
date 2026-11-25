@@ -82,3 +82,7 @@ The demo catalogue holds **120 wholesale listings** across 8 B2B categories and 
 ## Important deployment note
 
 This is a local MVP/dev build. Before public production deployment, configure a strong `SINDBAD_SECRET`, HTTPS, PostgreSQL, migrations, rate limiting, CSRF protection, audit logs, backups, supplier verification, and real payment/shipping integrations. Demo checkout does not charge money.
+
+## Product photos
+
+Product photos in `photos/*.txt` are AI-generated studio-style images (one per product, checked by eye against the product title). They are stored as base64 text in the repo and served from `/photo/<id>.jpg`. Products without a photo yet use the category illustration in `static/art/`. No third-party or scraped images are used.
