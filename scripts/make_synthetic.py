@@ -7,7 +7,7 @@ The file is clearly synthetic: every row carries its segment label. Results meas
 can recover planted structure. They do not show how well they would do on real buyers.
 Run:  python scripts/make_synthetic.py
 """
-import csv, os, random, sqlite3
+import os, random, sqlite3
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SEGMENTS = {
@@ -63,9 +63,14 @@ def generate(n_users=480, seed=7):
 
 if __name__ == '__main__':
     rows = generate()
+    code = {'view': 'v', 'click': 'c', 'cart': 'a', 'purchase': 'p'}
+    users = {}
+    for u, pid, ev, seg in rows:
+        users.setdefault(u, [seg, {}])[1].setdefault(pid, '')
+        users[u][1][pid] += code[ev]
     os.makedirs(os.path.join(ROOT, 'data'), exist_ok=True)
-    with open(os.path.join(ROOT, 'data', 'synthetic_interactions.csv'), 'w', newline='') as f:
-        w = csv.writer(f)
-        w.writerow(['user_id', 'product_id', 'event_type', 'segment_index'])
-        w.writerows(rows)
-    print(len(rows), 'rows,', len({r[0] for r in rows}), 'synthetic users')
+    with open(os.path.join(ROOT, 'data', 'synthetic_interactions.txt'), 'w') as f:
+        f.write('# SYNTHETIC data. line = user segment_index product_id:events ... (v view, c click, a cart, p purchase)\n')
+        for u, (seg, items) in users.items():
+            f.write(u + ' ' + str(seg) + ' ' + ' '.join(f'{p}:{e}' for p, e in sorted(items.items())) + '\n')
+    print(len(rows), 'events,', len(users), 'synthetic users')
