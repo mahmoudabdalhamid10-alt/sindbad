@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request, Response, Depends
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
+from recommender import Recommender, DEFAULT_WEIGHTS, load_synthetic
 import base64, sqlite3, os, hashlib, hmac, secrets, json
 from datetime import datetime, timedelta
 
@@ -207,6 +208,34 @@ def delete_product(pid:int,u=Depends(require_user)):
  c=db();cur=c.execute('UPDATE products SET active=0 WHERE id=? AND supplier_id=?',(pid,u['id']));c.commit();c.close()
  if not cur.rowcount:raise HTTPException(404,'Product not found')
  return {'ok':True}
+_ML={'key':None,'model':None}
+def ml_model():
+ """Fit the hybrid recommender on products + synthetic demo interactions + real interactions. Refit only when the data changed."""
+ c=db();prods=[dict(r) for r in c.execute('SELECT id,title,category,tags FROM products WHERE active=1 ORDER BY id')]
+ real=[('real%d'%r['user_id'],r['product_id'],r['event_type']) for r in c.execute('SELECT user_id,product_id,event_type FROM interactions')];c.close()
+ key=(len(prods),len(real))
+ if _ML['key']!=key:
+  syn=[]
+  f=os.path.join(BASE,'data','synthetic_interactions.txt')
+  if os.path.exists(f):syn=load_synthetic(f)
+  _ML['model']=Recommender().fit(prods,syn+real);_ML['key']=key
+ return _ML['model']
+@app.get('/api/products/{pid}/similar')
+def similar_products(pid:int,k:int=6):
+ m=ml_model();hits=m.similar(pid,min(max(k,1),12))
+ if not hits:raise HTTPException(404,'Product not found')
+ c=db();out=[]
+ for h in hits:
+  r=c.execute('SELECT p.*,u.company supplier_company FROM products p JOIN users u ON u.id=p.supplier_id WHERE p.id=? AND p.active=1',(h['product_id'],)).fetchone()
+  if r:
+   d=dict(r);parts=h['parts'];tot=sum(parts.values()) or 1
+   d['similarity']=h['score'];d['reason']={'bought_together':round(100*(parts['item_knn']+parts['svd'])/tot),'similar_text':round(100*parts['content']/tot)};out.append(d)
+ c.close();return {'items':out,'model':'hybrid: tf-idf content + item-knn + svd'}
+@app.get('/api/ml/info')
+def ml_info():
+ f=os.path.join(BASE,'docs','evaluation.json')
+ ev=json.load(open(f)) if os.path.exists(f) else None
+ return {'weights':DEFAULT_WEIGHTS,'evaluation':ev}
 @app.post('/api/interactions')
 def track_event(x:EventIn,u=Depends(require_user)):
  if x.event_type not in ('view','click','cart','purchase','favorite'):raise HTTPException(400,'Unsupported interaction')
