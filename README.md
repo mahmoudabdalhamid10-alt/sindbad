@@ -17,6 +17,25 @@
 3. Double-click `START.bat` and keep the terminal open.
 4. Your browser should open automatically. If it does not, visit http://127.0.0.1:8000
 
+## Run on macOS or Linux
+
+```bash
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --port 8000
+```
+
+Then open http://127.0.0.1:8000. The SQLite database (`sindbad.db`) is created and seeded on first start.
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+The tests use a temporary database and cover login, registration, role checks, product ownership, MOQ and stock rules for orders, the RFQ and quotation flow, and the recommendation response.
+
 ## Demo accounts
 
 | Role | Email | Password |
@@ -56,7 +75,7 @@ Test endpoints: `GET /api/health`, `GET /api/products?limit=200`, `GET /api/reco
 
 ## Catalogue data
 
-The demo catalogue holds **120 wholesale listings** across 8 B2B categories and 3 demo supplier companies. Listings are clearly sample marketplace data and should be replaced/verified before public launch. Existing `sindbad.db` files are upgraded additively: missing sample products are inserted by title; user accounts, orders, RFQs and existing interactions are not deleted.
+The demo catalogue holds **120 wholesale listings** across 8 B2B categories and 3 demo supplier companies. Product pictures are local category illustrations (`static/art/`), not photos of the listed items, so the app works offline. Listings are clearly sample marketplace data and should be replaced/verified before public launch. Existing `sindbad.db` files are upgraded additively: missing sample products are inserted by title; user accounts, orders, RFQs and existing interactions are not deleted.
 
 ## Important deployment note
 
