@@ -124,3 +124,5 @@ h2{font-size:18px;margin:18px 0 10px;color:var(--cyan)}
 
 @keyframes recoflash{from{outline:2px solid #4da3ff;outline-offset:6px}to{outline:2px solid transparent;outline-offset:6px}}
 .reco-flash{animation:recoflash 1.2s ease-out}
+
+*{scrollbar-color:#2a3a5c #0d1117;scrollbar-width:thin}
