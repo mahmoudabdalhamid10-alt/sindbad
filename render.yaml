@@ -11,3 +11,5 @@ services:
         value: 3.11.9
       - key: SINDBAD_SECRET
         generateValue: true
+      - key: DATABASE_URL
+        sync: false
