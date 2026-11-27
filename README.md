@@ -1,6 +1,8 @@
 <picture><img src="https://github.com/user-attachments/assets/eb75ff3d-5b09-49c5-88b1-041ab93652db" alt="Sindbad 2.0 - AI-Powered Global B2B Marketplace" width="100%" /></picture>
 
-<p align="center"><strong>A local development build of a bilingual (Arabic/English) B2B sourcing marketplace.</strong></p>
+<p align="center"><strong>A bilingual (Arabic/English) B2B sourcing marketplace with a hybrid product recommender. Live demo, persistent Postgres database, admin dashboard, tests.</strong></p>
+
+<p align="center"><a href="https://sindbad.onrender.com">Live demo: sindbad.onrender.com</a> (free server, the first visit can take about a minute to wake)</p>
 
 <p align="center">
 <img src="https://img.shields.io/badge/Python-0b1220?style=for-the-badge&logo=python&logoColor=67e8f9" alt="Python" />
@@ -8,9 +10,22 @@
 <img src="https://img.shields.io/badge/SQLite-0b1220?style=for-the-badge&logo=sqlite&logoColor=67e8f9" alt="SQLite" />
 </p>
 
-<sub>Artwork is illustrative.</sub>
-
 ![Sindbad marketplace home page](docs/screenshot.svg)
+
+## Recommender results (honest summary)
+
+Leave-one-out HitRate@10 on **synthetic** buyers (480 buyers in 8 planted segments, 5 seeds, 240 test buyers per run). Full numbers and the protocol are in `docs/evaluation.json` and `scripts/evaluate.py`.
+
+| Model | HitRate@10 |
+|---|---|
+| Random | 0.087 |
+| Popularity | 0.205 |
+| Content (TF-IDF) | 0.454 |
+| SVD (16 factors) | 0.636 |
+| Item-item CF | 0.758 |
+| Hybrid (0.20 content, 0.65 item-kNN, 0.15 SVD) | 0.758 |
+
+These numbers show that the models recover structure that I planted in generated data. They do not predict results on real buyers. With less data (10% of events) the hybrid beats item-item CF alone (0.336 vs 0.302).
 
 ## Run locally (no setup, no environment variables)
 
@@ -76,16 +91,8 @@ The tests use a temporary database and cover login, registration, role checks, p
 - Product details, favorites, sourcing cart and demo order checkout (no payment is collected).
 - RFQ publishing, supplier quotations, buyer quote comparison, and buyer RFQ/order dashboard.
 - Supplier directory, supplier-side product management, open buying requests, and business statistics.
-- Hybrid recommendation endpoint: category and tag affinity, weighted user-user collaborative filtering, popularity prior and cold-start fallback.
+- Hybrid recommender: TF-IDF content similarity, item-item collaborative filtering and a 16-factor SVD, blended, with a popularity fallback for new users (cold start). Details below.
 - Arabic/English UI with RTL/LTR switching.
-
-## Recommendation system
-
-`GET /api/recommendations` returns ranked products with a score and a reason. It uses a transparent hybrid baseline combining content/category affinity and collaborative-style aggregate popularity signals. It is an implementation-ready baseline, not a trained deep-learning model. For a research-grade model, collect a larger consented interaction dataset, add offline train/validation splits, compare content-based, item-item collaborative and hybrid models, and report Precision@K, Recall@K and NDCG@K.
-
-The response envelope includes `items`, `strategy`, `model`, and `personalized`, and the frontend consumes this format. Product detail views, add-to-cart events and favorites feed interaction signals, and the recommendation cards explain why an item was suggested.
-
-Test endpoints: `GET /api/health`, `GET /api/products?limit=200`, `GET /api/recommendations?limit=12`.
 
 ## Main API routes
 
@@ -101,9 +108,9 @@ Test endpoints: `GET /api/health`, `GET /api/products?limit=200`, `GET /api/reco
 
 The demo catalogue holds **120 wholesale listings** across 8 B2B categories and 3 demo supplier companies. Product pictures are AI-generated studio-style images (see Product photos below) or local category illustrations (`static/art/`), so the app works offline. Listings are clearly sample marketplace data and should be replaced/verified before public launch. Existing `sindbad.db` files are upgraded additively: missing sample products are inserted by title; user accounts, orders, RFQs and existing interactions are not deleted.
 
-## Important deployment note
+## Deployment
 
-This is a local MVP/dev build. Before public production deployment, configure a strong `SINDBAD_SECRET`, HTTPS, PostgreSQL, migrations, rate limiting, CSRF protection, audit logs, backups, supplier verification, and real payment/shipping integrations. Demo checkout does not charge money.
+The live demo runs on Render (free web service) with a free Neon Postgres database. Before real production use you would still need a strong `SINDBAD_SECRET`, migrations, rate limiting, CSRF protection, audit logs, backups, supplier verification and real payment and shipping integrations. No payment is collected in the demo.
 
 ## Product photos
 
